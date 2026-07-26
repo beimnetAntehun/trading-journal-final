@@ -18,6 +18,7 @@ import { classifySession, sessionMetrics, sessionDayHeatmap, holdingTime, fmtHol
 import { computeMetrics, getMetricDefinitions } from './lib/advancedMetrics'
 import { strategyMetrics } from './lib/strategyLab'
 import { QUOTES, getRandomQuote, getQuoteOfDay, searchQuotes, getAuthors, getQuotesByAuthor, getQuoteCount } from './lib/quotes'
+import PlaybookModule from './PlaybookModule'
 
 /* ============================ UI primitives ============================ */
 const cx = (...a) => a.filter(Boolean).join(' ')
@@ -133,6 +134,7 @@ function StoreProvider({ children }) {
     setPrompts: (arr) => update((s) => { s.reflectionPrompts = arr; return s }),
     setRiskPlan: (rp) => update((s) => { s.riskPlan = { ...s.riskPlan, ...rp }; return s }),
     setTradingPlan: (tp) => update((s) => { s.tradingPlan = { ...s.tradingPlan, ...tp }; return s }),
+    setPlaybookModels: (models) => update((s) => { s.playbookModels = models; return s }),
     setGoals: (g) => update((s) => { s.goals = { ...s.goals, ...g }; return s }),
     hardReset: () => setState(db.reset()),
     importJson: (json) => setState(db.importJson(json)),
@@ -241,7 +243,7 @@ const blankTrade = (accountId) => ({
   multiplier: 1, stopLoss: '', takeProfit: '', fees: '', strategy: '', grade: 0,
   emotions: [], mistakes: [], notes: '', entryShot: null, exitShot: null,
   checklist: {}, planned: false, followedPlan: null, followedPlanNote: '', reflection: {},
-  session: '',
+  session: '', modelId: '',
 })
 
 function validate(t) {
@@ -388,6 +390,14 @@ function TradeForm({ open, onClose, initial, quick }) {
                 <option value='London'>London</option>
                 <option value='London/NY Overlap'>London/NY Overlap</option>
                 <option value='New York'>New York</option>
+              </select>
+            </Field>
+            <Field label='Playbook Model'>
+              <select className={inputCls} value={t.modelId || ''} onChange={(e) => set('modelId', e.target.value)}>
+                <option value=''>None</option>
+                {(state.playbookModels || []).filter((m) => m.status === 'Active' || m.status === 'Testing').map((m) => (
+                  <option key={m.id} value={m.id}>{m.name} ({m.status})</option>
+                ))}
               </select>
             </Field>
           </div>
@@ -3830,6 +3840,7 @@ const NAV = [
   ['score', 'Score', '🎯'],
   ['goals', 'Goals', '🏆'],
   ['plan', 'Plan', '📜'],
+  ['playbook', 'Playbook', '📘'],
   ['strategies', 'Strategies', '🧪'],
   ['sessions', 'Sessions', '🌍'],
   ['mistakes', 'Mistakes', '⚠️'],
@@ -3842,7 +3853,7 @@ const NAV = [
 ]
 
 function Shell() {
-  const { state, setTheme, setActiveAccount } = useStore()
+  const { state, setTheme, setActiveAccount, setPlaybookModels } = useStore()
   const [view, setView] = useState('dashboard')
   const [filters, setFilters] = useState(emptyFilters)
   const [aggregate, setAggregate] = useState(false)
@@ -3881,7 +3892,7 @@ function Shell() {
   }, [openNew])
 
   const visible = useMemo(() => applyFilters(state.trades, filters, state.activeAccountId, aggregate), [state.trades, filters, state.activeAccountId, aggregate])
-  const showFilters = view === 'dashboard' || view === 'trades' || view === 'score' || view === 'goals' || view === 'plan' || view === 'strategies' || view === 'sessions' || view === 'mistakes' || view === 'prostats' || view === 'reports' || view === 'psych' || view === 'coach'
+  const showFilters = view === 'dashboard' || view === 'trades' || view === 'score' || view === 'goals' || view === 'plan' || view === 'playbook' || view === 'strategies' || view === 'sessions' || view === 'mistakes' || view === 'prostats' || view === 'reports' || view === 'psych' || view === 'coach'
 
   return (
     <div className='min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100'>
@@ -3917,7 +3928,7 @@ function Shell() {
           </div>
 
           <div className='mb-2 flex items-center justify-between'>
-            <h1 className='text-lg font-bold capitalize'>{view === 'psych' ? 'Psychology' : view === 'coach' ? 'AI Coach' : view === 'sessions' ? 'Sessions' : view === 'prostats' ? 'Pro Stats' : view === 'goals' ? 'Goals' : view === 'strategies' ? 'Strategy Lab' : view === 'plan' ? 'Trading Plan' : view}</h1>
+            <h1 className='text-lg font-bold capitalize'>{view === 'psych' ? 'Psychology' : view === 'coach' ? 'AI Coach' : view === 'sessions' ? 'Sessions' : view === 'prostats' ? 'Pro Stats' : view === 'goals' ? 'Goals' : view === 'strategies' ? 'Strategy Lab' : view === 'plan' ? 'Trading Plan' : view === 'playbook' ? 'Playbook' : view}</h1>
             {aggregate && <span className='text-xs text-slate-400 no-print'>Aggregated across all accounts</span>}
           </div>
 
@@ -3928,6 +3939,7 @@ function Shell() {
           {view === 'score' && <DisciplineScoreView trades={visible} />}
           {view === 'goals' && <GoalCenterView trades={visible} />}
           {view === 'plan' && <TradingPlanView />}
+          {view === 'playbook' && <PlaybookModule allTrades={state.trades} models={state.playbookModels || []} onModelsChange={(m) => setPlaybookModels(m)} />}
           {view === 'strategies' && <StrategyLabView trades={visible} />}
           {view === 'sessions' && <SessionAnalysisView trades={visible} />}
           {view === 'mistakes' && <MistakeAnalyticsView trades={visible} />}
