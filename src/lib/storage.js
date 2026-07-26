@@ -32,6 +32,7 @@ const seed = () => ({
   ],
   riskPlan: { riskPerTradePct: 1, dailyLossLimit: 300, weeklyLossLimit: 900 },
   goals: { monthlyPnlTarget: 2000, monthlyRTarget: 10, maxDrawdownTarget: 10, minWinRate: 50, maxTradesPerDay: 5, maxDailyLoss: 300, targetProfitFactor: 2.0, achieved: {} },
+  tradingPlan: { name: '', why: '', confluences: '', sessions: 'New York', tradesPerDay: 2, pairs: 'UJ', htf: 'Monthly, Weekly, Daily', entryTf: '15M, 1H', riskPerTrade: 1.5, lotSize: 0.01, rrTarget: '1:3 → BE', exitReasons: 'News events, consolidation', expectedWin: 3, expectedLoss: 1, docMethod: 'Notion', weeklyTarget: 9, monthlyTarget: 36, accountSize: 50, targetAccount: 500, habits: 'Go to gym, read trading books, watch podcasts, backtest & forward test', notes: 'Plan your trade, trade your plan. Don\'t be emotional. Risk what you afford. It\'s about staying in the game.' },
   settings: { theme: 'dark' },
 })
 

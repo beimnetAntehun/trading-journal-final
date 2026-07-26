@@ -132,6 +132,7 @@ function StoreProvider({ children }) {
     setChecklist: (arr) => update((s) => { s.checklist = arr; return s }),
     setPrompts: (arr) => update((s) => { s.reflectionPrompts = arr; return s }),
     setRiskPlan: (rp) => update((s) => { s.riskPlan = { ...s.riskPlan, ...rp }; return s }),
+    setTradingPlan: (tp) => update((s) => { s.tradingPlan = { ...s.tradingPlan, ...tp }; return s }),
     setGoals: (g) => update((s) => { s.goals = { ...s.goals, ...g }; return s }),
     hardReset: () => setState(db.reset()),
     importJson: (json) => setState(db.importJson(json)),
@@ -3610,6 +3611,164 @@ function MistakeAnalyticsView({ trades }) {
   )
 }
 
+/* ============================ Trading Plan ============================ */
+const PLAN_SECTIONS = [
+  { key: 'why', label: 'Your Why', icon: '🎯', type: 'textarea' },
+  { key: 'confluences', label: 'Setup Confluences', icon: '📐', type: 'text' },
+  { key: 'sessions', label: 'Trading Sessions', icon: '🌍', type: 'text' },
+  { key: 'pairs', label: 'Trading Pairs', icon: '💱', type: 'text' },
+  { key: 'htf', label: 'Higher Timeframe Analysis', icon: '📊', type: 'text' },
+  { key: 'entryTf', label: 'Entry Timeframe', icon: '⏱️', type: 'text' },
+  { key: 'tradesPerDay', label: 'Max Trades / Day', icon: '📋', type: 'number' },
+  { key: 'riskPerTrade', label: 'Risk % Per Trade', icon: '🛡️', type: 'number', suffix: '%' },
+  { key: 'lotSize', label: 'Lot Size', icon: '📏', type: 'number' },
+  { key: 'rrTarget', label: 'R:R Target', icon: '⚖️', type: 'text' },
+  { key: 'exitReasons', label: 'Exit Reasons', icon: '🚪', type: 'textarea' },
+  { key: 'expectedWin', label: 'Expected Win %', icon: '📈', type: 'number', suffix: '%' },
+  { key: 'expectedLoss', label: 'Max Loss %', icon: '📉', type: 'number', suffix: '%' },
+  { key: 'docMethod', label: 'Documentation Method', icon: '📝', type: 'text' },
+  { key: 'weeklyTarget', label: 'Weekly Profit Target', icon: '💰', type: 'number', suffix: '%' },
+  { key: 'monthlyTarget', label: 'Monthly Profit Target', icon: '💎', type: 'number', suffix: '%' },
+  { key: 'accountSize', label: 'Account Size', icon: '🏦', type: 'number', prefix: '$' },
+  { key: 'targetAccount', label: 'Target Account Size', icon: '🚀', type: 'number', prefix: '$' },
+  { key: 'habits', label: 'High Priority Actions / Habits', icon: '⚡', type: 'textarea' },
+  { key: 'notes', label: 'Extra Notes', icon: '📌', type: 'textarea' },
+]
+
+function TradingPlanView() {
+  const { state, setTradingPlan } = useStore()
+  const plan = state.tradingPlan || {}
+  const [editing, setEditing] = useState(null) // which key is being edited
+  const [draft, setDraft] = useState('')
+  const [saved, setSaved] = useState(false)
+
+  const startEdit = (key, currentVal) => {
+    setEditing(key)
+    setDraft(currentVal ?? '')
+  }
+
+  const saveField = (key) => {
+    const num = Number(draft)
+    const section = PLAN_SECTIONS.find((s) => s.key === key)
+    const value = section && (section.type === 'number' || section.suffix) ? (isNaN(num) ? draft : num) : draft
+    setTradingPlan({ [key]: value })
+    setEditing(null)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  const cancelEdit = () => setEditing(null)
+
+  return (
+    <div className='space-y-4'>
+      {/* Header */}
+      <div className='flex items-center justify-between'>
+        <div>
+          <h2 className='text-lg font-bold'>📜 BT's Trading Plan</h2>
+          <p className='text-xs text-slate-400 mt-0.5'>Tap any field to edit. Your plan is saved automatically.</p>
+        </div>
+        {saved && <span className='text-xs text-emerald-500 font-medium'>✓ Saved</span>}
+      </div>
+
+      {/* Name & Why — hero section */}
+      <div className={cx(card, 'relative overflow-hidden bg-gradient-to-r from-indigo-500/[0.04] p-5')}>
+        <div className='flex items-start justify-between gap-3'>
+          <div className='flex-1'>
+            {editing === 'name' ? (
+              <div className='space-y-2'>
+                <input className={cx(inputCls, 'text-lg font-bold')} value={draft} onChange={(e) => setDraft(e.target.value)}
+                  placeholder='Your name' autoFocus onKeyDown={(e) => e.key === 'Enter' && saveField('name')} />
+                <div className='flex gap-2'>
+                  <button className={btnPrimary} onClick={() => saveField('name')}>Save</button>
+                  <button className={btnGhost} onClick={cancelEdit}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <h1 className='text-2xl font-bold cursor-pointer hover:text-indigo-500 transition-colors'
+                onClick={() => startEdit('name', plan.name)}>
+                {plan.name || 'BT'} <span className='text-sm font-normal text-slate-400'>✎</span>
+              </h1>
+            )}
+            {editing === 'why' ? (
+              <div className='space-y-2 mt-3'>
+                <textarea className={cx(inputCls, 'min-h-[80px]')} value={draft} onChange={(e) => setDraft(e.target.value)}
+                  placeholder='Why do you trade?' autoFocus />
+                <div className='flex gap-2'>
+                  <button className={btnPrimary} onClick={() => saveField('why')}>Save</button>
+                  <button className={btnGhost} onClick={cancelEdit}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <p className='mt-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer hover:text-indigo-500 transition-colors'
+                onClick={() => startEdit('why', plan.why)}>
+                {plan.why || 'Click to add your why...'} <span className='text-xs text-slate-400'>✎</span>
+              </p>
+            )}
+          </div>
+          <div className='shrink-0 text-4xl opacity-30 select-none'>📜</div>
+        </div>
+      </div>
+
+      {/* Plan grid */}
+      <div className='grid gap-3 sm:grid-cols-2 xl:grid-cols-3'>
+        {PLAN_SECTIONS.map((section) => {
+          const currentVal = plan[section.key]
+          const displayVal = currentVal != null && currentVal !== '' ? currentVal : '—'
+          const prefix = section.prefix || ''
+          const suffix = section.suffix || ''
+
+          return (
+            <div key={section.key} className={cx(card, 'p-3 transition-all hover:ring-1 hover:ring-indigo-500/30')}>
+              <div className='flex items-start justify-between gap-2'>
+                <div className='flex items-center gap-2'>
+                  <span className='text-lg'>{section.icon}</span>
+                  <h3 className='text-xs font-semibold uppercase tracking-wider text-slate-500'>{section.label}</h3>
+                </div>
+                {editing === section.key ? (
+                  <button className={btnGhost} onClick={cancelEdit}>✕</button>
+                ) : (
+                  <button className={cx(btnGhost, 'opacity-0 group-hover:opacity-100 text-[10px]')}
+                    onClick={() => startEdit(section.key, currentVal ?? '')}>✎</button>
+                )}
+              </div>
+
+              {editing === section.key ? (
+                <div className='mt-2 space-y-2'>
+                  {section.type === 'textarea' ? (
+                    <textarea className={cx(inputCls, 'min-h-[60px]')} value={draft}
+                      onChange={(e) => setDraft(e.target.value)} autoFocus />
+                  ) : (
+                    <input className={inputCls} type={section.type === 'number' ? 'number' : 'text'} step='any'
+                      value={draft} onChange={(e) => setDraft(e.target.value)} autoFocus
+                      onKeyDown={(e) => e.key === 'Enter' && saveField(section.key)} />
+                  )}
+                  <div className='flex gap-2'>
+                    <button className={btnPrimary} onClick={() => saveField(section.key)}>Save</button>
+                    <button className={btnGhost} onClick={cancelEdit}>Cancel</button>
+                  </div>
+                </div>
+              ) : (
+                <div className='mt-1.5 cursor-pointer' onClick={() => startEdit(section.key, currentVal ?? '')}>
+                  <span className='text-sm font-semibold tabular-nums'>
+                    {prefix}{typeof displayVal === 'number' ? displayVal.toFixed(2) : displayVal}{suffix}
+                  </span>
+                  <span className='ml-1.5 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100'>✎</span>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Footer moto */}
+      <div className={cx(card, 'p-4 text-center')}>
+        <p className='text-sm font-semibold text-indigo-600 dark:text-indigo-400'>Plan your trade, trade your plan.</p>
+        <p className='mt-1 text-xs text-slate-400'>Don't be emotional. Risk what you can afford. It's about staying in the game.</p>
+      </div>
+    </div>
+  )
+}
+
 /* ============================ Settings ============================ */
 function SettingsView() {
   const { state, setTags, setChecklist, setPrompts, setRiskPlan, setGoals, addAccount, hardReset, importJson } = useStore()
@@ -3670,6 +3829,7 @@ const NAV = [
   ['trades', 'Trades', '📋'],
   ['score', 'Score', '🎯'],
   ['goals', 'Goals', '🏆'],
+  ['plan', 'Plan', '📜'],
   ['strategies', 'Strategies', '🧪'],
   ['sessions', 'Sessions', '🌍'],
   ['mistakes', 'Mistakes', '⚠️'],
@@ -3708,19 +3868,20 @@ function Shell() {
       else if (e.key === 't') setView('trades')
       else if (e.key === 's') setView('score')
       else if (e.key === 'g') setView('goals')
+      else if (e.key === 'l') setView('plan')
       else if (e.key === 'r') setView('strategies')
       else if (e.key === 'm') setView('mistakes')
       else if (e.key === 'e') setView('sessions')
       else if (e.key === 'p') setView('prostats')
       else if (e.key === 'c') setView('coach')
-      else if (e.key === '?') alert('Shortcuts:\nn  new trade\nq  quick add\nd  dashboard\nt  trades\ns  score\ng  goals\nr  strategies\ne  sessions\nm  mistakes\np  pro stats\nc  AI coach\nCtrl/Cmd+Enter  save trade')
+      else if (e.key === '?') alert('Shortcuts:\nn  new trade\nq  quick add\nd  dashboard\nt  trades\ns  score\ng  goals\nl  trading plan\nr  strategies\ne  sessions\nm  mistakes\np  pro stats\nc  AI coach\nCtrl/Cmd+Enter  save trade')
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [openNew])
 
   const visible = useMemo(() => applyFilters(state.trades, filters, state.activeAccountId, aggregate), [state.trades, filters, state.activeAccountId, aggregate])
-  const showFilters = view === 'dashboard' || view === 'trades' || view === 'score' || view === 'goals' || view === 'strategies' || view === 'sessions' || view === 'mistakes' || view === 'prostats' || view === 'reports' || view === 'psych' || view === 'coach'
+  const showFilters = view === 'dashboard' || view === 'trades' || view === 'score' || view === 'goals' || view === 'plan' || view === 'strategies' || view === 'sessions' || view === 'mistakes' || view === 'prostats' || view === 'reports' || view === 'psych' || view === 'coach'
 
   return (
     <div className='min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100'>
@@ -3756,7 +3917,7 @@ function Shell() {
           </div>
 
           <div className='mb-2 flex items-center justify-between'>
-            <h1 className='text-lg font-bold capitalize'>{view === 'psych' ? 'Psychology' : view === 'coach' ? 'AI Coach' : view === 'sessions' ? 'Sessions' : view === 'prostats' ? 'Pro Stats' : view === 'goals' ? 'Goals' : view === 'strategies' ? 'Strategy Lab' : view}</h1>
+            <h1 className='text-lg font-bold capitalize'>{view === 'psych' ? 'Psychology' : view === 'coach' ? 'AI Coach' : view === 'sessions' ? 'Sessions' : view === 'prostats' ? 'Pro Stats' : view === 'goals' ? 'Goals' : view === 'strategies' ? 'Strategy Lab' : view === 'plan' ? 'Trading Plan' : view}</h1>
             {aggregate && <span className='text-xs text-slate-400 no-print'>Aggregated across all accounts</span>}
           </div>
 
@@ -3766,6 +3927,7 @@ function Shell() {
           {view === 'trades' && <TradeTable trades={visible} onEdit={openEdit} />}
           {view === 'score' && <DisciplineScoreView trades={visible} />}
           {view === 'goals' && <GoalCenterView trades={visible} />}
+          {view === 'plan' && <TradingPlanView />}
           {view === 'strategies' && <StrategyLabView trades={visible} />}
           {view === 'sessions' && <SessionAnalysisView trades={visible} />}
           {view === 'mistakes' && <MistakeAnalyticsView trades={visible} />}
