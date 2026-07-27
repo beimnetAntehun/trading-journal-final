@@ -2041,7 +2041,7 @@ const clampPct = (pct) => Math.max(0, Math.min(100, pct))
 
 const FOREX_PAIRS = [
   // type: 'usdQuote' = $10/pip fixed (EUR/USD, GBP/USD, AUD/USD, NZD/USD)
-  // type: 'jpyQuote' = pip value = 1000 / USDJPY rate (EUR/JPY, GBP/JPY, AUD/JPY, etc.)
+  // type: 'jpyQuote' = pip value ~$6.1/pip (EUR/JPY, GBP/JPY, AUD/JPY, etc.)
   // type: 'usdBase'  = pip value = $10/pip fixed for standard USD pairs
   // type: 'nonJpyCross' = pip value ≈ $10/pip (variance depends on rate, close enough)
   // type: 'cfd'    = $10/pt
@@ -2069,21 +2069,17 @@ function PositionCalc() {
   const [riskPct, setRiskPct] = useState(state.riskPlan.riskPerTradePct)
   const [selectedPair, setSelectedPair] = useState('EUR/USD')
   const [stopPipsInput, setStopPipsInput] = useState('')
-  const [usdJpyRate, setUsdJpyRate] = useState('')
   const [calculated, setCalculated] = useState(false)
   const [accountCurrency, setAccountCurrency] = useState('USD')
 
   const pairInfo = FOREX_PAIRS.find((p) => p.pair === selectedPair) || FOREX_PAIRS[0]
   const riskAmt = balance * riskPct / 100
-  const needsJpyRate = pairInfo.type === 'jpyQuote'
 
   function getPipValue() {
     switch (pairInfo.type) {
       case 'usdQuote': return 10
       case 'usdBase': return 10
-      case 'jpyQuote':
-        if (!usdJpyRate) return null
-        return accountCurrency === 'USD' ? 1000 / Number(usdJpyRate) : 1000 / Number(usdJpyRate)
+      case 'jpyQuote': return 6.1
       case 'nonJpyCross': return 10
       case 'cfd': return 10
       case 'crypto': return 1
@@ -2128,11 +2124,6 @@ function PositionCalc() {
           <Field label='Stop Loss in Pips'>
             <input type='number' step='any' className={inputCls} value={stopPipsInput} onChange={(e) => { setStopPipsInput(e.target.value); setCalculated(false) }} placeholder='e.g. 10' />
           </Field>
-          {needsJpyRate && (
-            <Field label='USD/JPY Rate' hint='e.g. 157.50'>
-              <input type='number' step='any' className={inputCls} value={usdJpyRate} onChange={(e) => { setUsdJpyRate(e.target.value); setCalculated(false) }} placeholder='e.g. 157.50' />
-            </Field>
-          )}
           <button className={btnPrimary} onClick={doCalculate} disabled={!Number(stopPipsInput)}>Calculate</button>
         </div>
 
