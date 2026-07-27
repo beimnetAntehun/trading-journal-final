@@ -2113,6 +2113,12 @@ function PositionCalc() {
           <Field label='Account Currency'>
             <select className={inputCls} value={accountCurrency} onChange={(e) => setAccountCurrency(e.target.value)}>
               <option value='USD'>USD</option><option value='EUR'>EUR</option><option value='GBP'>GBP</option>
+              <option value='JPY'>JPY</option><option value='AUD'>AUD</option><option value='NZD'>NZD</option>
+              <option value='CAD'>CAD</option><option value='CHF'>CHF</option><option value='HKD'>HKD</option>
+              <option value='SGD'>SGD</option><option value='SEK'>SEK</option><option value='NOK'>NOK</option>
+              <option value='MXN'>MXN</option><option value='TRY'>TRY</option><option value='ZAR'>ZAR</option>
+              <option value='CNH'>CNH</option><option value='PLN'>PLN</option><option value='CZK'>CZK</option>
+              <option value='DKK'>DKK</option><option value='HUF'>HUF</option>
             </select>
           </Field>
           <Field label='Account Balance'>
