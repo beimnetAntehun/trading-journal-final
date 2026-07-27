@@ -3,6 +3,7 @@ import React, {
   useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy,
 } from 'react'
 import { useStore, StoreProvider } from './context/StoreContext'
+import { AuthModal } from './components/AuthModal'
 import {
   ResponsiveContainer, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, Cell, ReferenceLine,
@@ -3906,7 +3907,7 @@ const NAV = [
 ]
 
 function Shell() {
-  const { state, setTheme, setActiveAccount, setPlaybookModels } = useStore()
+  const { state, setTheme, setActiveAccount, setPlaybookModels, user, cloudStatus } = useStore()
   const [view, setView] = useState('dashboard')
   const [filters, setFilters] = useState(emptyFilters)
   const [aggregate, setAggregate] = useState(false)
@@ -3914,6 +3915,7 @@ function Shell() {
   const [quick, setQuick] = useState(false)
   const [editing, setEditing] = useState(null)
   const [importOpen, setImportOpen] = useState(false)
+  const [authOpen, setAuthOpen] = useState(false)
 
   const dark = state.settings.theme === 'dark'
   useEffect(() => { document.documentElement.classList.toggle('dark', dark) }, [dark])
@@ -3977,6 +3979,9 @@ function Shell() {
               <button className={btnGhost} onClick={() => openNew(true)}>Quick add <kbd className='ml-1 rounded bg-slate-200 px-1 dark:bg-slate-700'>q</kbd></button>
               <button className={btnPrimary} onClick={() => openNew(false)}>+ New trade <kbd className='ml-1 rounded bg-indigo-500/60 px-1'>n</kbd></button>
               <button className={btnGhost} onClick={() => setTheme(dark ? 'light' : 'dark')} title='Toggle theme'>{dark ? '☀' : '🌙'}</button>
+              <button className={cx(btnGhost, 'text-xs')} onClick={() => setAuthOpen(true)} title='Cloud Sync'>
+                {user ? (cloudStatus === 'saved' ? '☁️' : cloudStatus === 'syncing' ? '🔄' : '☁️') : '🔓'}
+              </button>
             </div>
           </div>
 
@@ -4007,6 +4012,7 @@ function Shell() {
 
       <TradeForm open={formOpen} quick={quick} initial={editing || blankTrade(state.activeAccountId)} onClose={() => setFormOpen(false)} />
       <ImportModal open={importOpen} onClose={() => setImportOpen(false)} />
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} onAuth={() => {}} />
     </div>
   )
 }
