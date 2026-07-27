@@ -2040,19 +2040,26 @@ function CalendarHeat({ trades, onDrillDay, compact }) {
 const clampPct = (pct) => Math.max(0, Math.min(100, pct))
 
 const FOREX_PAIRS = [
-  { pair: 'AUD/CAD', pip: 10 }, { pair: 'AUD/CHF', pip: 10 }, { pair: 'AUD/JPY', pip: 9.3 }, { pair: 'AUD/NZD', pip: 10 }, { pair: 'AUD/USD', pip: 10 },
-  { pair: 'BTC/USD', pip: 1 }, { pair: 'CAD/CHF', pip: 10 }, { pair: 'CAD/JPY', pip: 9.3 }, { pair: 'CHF/JPY', pip: 9.3 }, { pair: 'ETH/USD', pip: 1 },
-  { pair: 'EUR/AUD', pip: 10 }, { pair: 'EUR/CAD', pip: 10 }, { pair: 'EUR/CHF', pip: 10 }, { pair: 'EUR/CZK', pip: 10 }, { pair: 'EUR/DKK', pip: 10 },
-  { pair: 'EUR/GBP', pip: 10 }, { pair: 'EUR/HUF', pip: 10 }, { pair: 'EUR/JPY', pip: 9.3 }, { pair: 'EUR/NOK', pip: 10 }, { pair: 'EUR/NZD', pip: 10 },
-  { pair: 'EUR/PLN', pip: 10 }, { pair: 'EUR/SEK', pip: 10 }, { pair: 'EUR/TRY', pip: 10 }, { pair: 'EUR/USD', pip: 10 }, { pair: 'EUR/ZAR', pip: 10 },
-  { pair: 'GBP/AUD', pip: 10 }, { pair: 'GBP/CAD', pip: 10 }, { pair: 'GBP/CHF', pip: 10 }, { pair: 'GBP/JPY', pip: 9.3 }, { pair: 'GBP/NOK', pip: 10 },
-  { pair: 'GBP/NZD', pip: 10 }, { pair: 'GBP/SEK', pip: 10 }, { pair: 'GBP/USD', pip: 10 },
-  { pair: 'GER40', pip: 10 }, { pair: 'NAS100', pip: 10 }, { pair: 'NZD/CAD', pip: 10 }, { pair: 'NZD/CHF', pip: 10 }, { pair: 'NZD/JPY', pip: 9.3 }, { pair: 'NZD/USD', pip: 10 },
-  { pair: 'SPX500', pip: 10 }, { pair: 'US30', pip: 10 },
-  { pair: 'USD/CAD', pip: 10 }, { pair: 'USD/CHF', pip: 10 }, { pair: 'USD/CNH', pip: 10 }, { pair: 'USD/CZK', pip: 10 }, { pair: 'USD/DKK', pip: 10 },
-  { pair: 'USD/HKD', pip: 10 }, { pair: 'USD/HUF', pip: 10 }, { pair: 'USD/JPY', pip: 9.3 }, { pair: 'USD/MXN', pip: 10 }, { pair: 'USD/NOK', pip: 10 },
-  { pair: 'USD/PLN', pip: 10 }, { pair: 'USD/SEK', pip: 10 }, { pair: 'USD/SGD', pip: 10 }, { pair: 'USD/TRY', pip: 10 }, { pair: 'USD/ZAR', pip: 10 },
-  { pair: 'XAG/USD (Silver)', pip: 50 }, { pair: 'XAU/USD (Gold)', pip: 10 },
+  // type: 'usdQuote' = $10/pip fixed (EUR/USD, GBP/USD, AUD/USD, NZD/USD)
+  // type: 'jpyQuote' = pip value = 1000 / USDJPY rate (EUR/JPY, GBP/JPY, AUD/JPY, etc.)
+  // type: 'usdBase'  = pip value = $10/pip fixed for standard USD pairs
+  // type: 'nonJpyCross' = pip value ≈ $10/pip (variance depends on rate, close enough)
+  // type: 'cfd'    = $10/pt
+  // type: 'crypto' = $1/pip
+  // type: 'metal'  = $10 (Gold), $50 (Silver)
+  { pair: 'AUD/CAD', type: 'nonJpyCross' }, { pair: 'AUD/CHF', type: 'nonJpyCross' }, { pair: 'AUD/JPY', type: 'jpyQuote' }, { pair: 'AUD/NZD', type: 'nonJpyCross' }, { pair: 'AUD/USD', type: 'usdQuote' },
+  { pair: 'BTC/USD', type: 'crypto' }, { pair: 'CAD/CHF', type: 'nonJpyCross' }, { pair: 'CAD/JPY', type: 'jpyQuote' }, { pair: 'CHF/JPY', type: 'jpyQuote' }, { pair: 'ETH/USD', type: 'crypto' },
+  { pair: 'EUR/AUD', type: 'nonJpyCross' }, { pair: 'EUR/CAD', type: 'nonJpyCross' }, { pair: 'EUR/CHF', type: 'nonJpyCross' }, { pair: 'EUR/CZK', type: 'nonJpyCross' }, { pair: 'EUR/DKK', type: 'nonJpyCross' },
+  { pair: 'EUR/GBP', type: 'nonJpyCross' }, { pair: 'EUR/HUF', type: 'nonJpyCross' }, { pair: 'EUR/JPY', type: 'jpyQuote' }, { pair: 'EUR/NOK', type: 'nonJpyCross' }, { pair: 'EUR/NZD', type: 'nonJpyCross' },
+  { pair: 'EUR/PLN', type: 'nonJpyCross' }, { pair: 'EUR/SEK', type: 'nonJpyCross' }, { pair: 'EUR/TRY', type: 'nonJpyCross' }, { pair: 'EUR/USD', type: 'usdQuote' }, { pair: 'EUR/ZAR', type: 'nonJpyCross' },
+  { pair: 'GBP/AUD', type: 'nonJpyCross' }, { pair: 'GBP/CAD', type: 'nonJpyCross' }, { pair: 'GBP/CHF', type: 'nonJpyCross' }, { pair: 'GBP/JPY', type: 'jpyQuote' }, { pair: 'GBP/NOK', type: 'nonJpyCross' },
+  { pair: 'GBP/NZD', type: 'nonJpyCross' }, { pair: 'GBP/SEK', type: 'nonJpyCross' }, { pair: 'GBP/USD', type: 'usdQuote' },
+  { pair: 'GER40', type: 'cfd' }, { pair: 'NAS100', type: 'cfd' }, { pair: 'NZD/CAD', type: 'nonJpyCross' }, { pair: 'NZD/CHF', type: 'nonJpyCross' }, { pair: 'NZD/JPY', type: 'jpyQuote' }, { pair: 'NZD/USD', type: 'usdQuote' },
+  { pair: 'SPX500', type: 'cfd' }, { pair: 'US30', type: 'cfd' },
+  { pair: 'USD/CAD', type: 'usdBase' }, { pair: 'USD/CHF', type: 'usdBase' }, { pair: 'USD/CNH', type: 'nonJpyCross' }, { pair: 'USD/CZK', type: 'nonJpyCross' }, { pair: 'USD/DKK', type: 'nonJpyCross' },
+  { pair: 'USD/HKD', type: 'nonJpyCross' }, { pair: 'USD/HUF', type: 'nonJpyCross' }, { pair: 'USD/JPY', type: 'jpyQuote' }, { pair: 'USD/MXN', type: 'nonJpyCross' }, { pair: 'USD/NOK', type: 'nonJpyCross' },
+  { pair: 'USD/PLN', type: 'nonJpyCross' }, { pair: 'USD/SEK', type: 'nonJpyCross' }, { pair: 'USD/SGD', type: 'nonJpyCross' }, { pair: 'USD/TRY', type: 'nonJpyCross' }, { pair: 'USD/ZAR', type: 'nonJpyCross' },
+  { pair: 'XAG/USD (Silver)', type: 'metal' }, { pair: 'XAU/USD (Gold)', type: 'metal' },
 ]
 
 function PositionCalc() {
@@ -2062,12 +2069,30 @@ function PositionCalc() {
   const [riskPct, setRiskPct] = useState(state.riskPlan.riskPerTradePct)
   const [selectedPair, setSelectedPair] = useState('EUR/USD')
   const [stopPipsInput, setStopPipsInput] = useState('')
+  const [usdJpyRate, setUsdJpyRate] = useState('')
   const [calculated, setCalculated] = useState(false)
   const [accountCurrency, setAccountCurrency] = useState('USD')
 
   const pairInfo = FOREX_PAIRS.find((p) => p.pair === selectedPair) || FOREX_PAIRS[0]
-  const pipValue = pairInfo.pip
   const riskAmt = balance * riskPct / 100
+  const needsJpyRate = pairInfo.type === 'jpyQuote'
+
+  function getPipValue() {
+    switch (pairInfo.type) {
+      case 'usdQuote': return 10
+      case 'usdBase': return 10
+      case 'jpyQuote':
+        if (!usdJpyRate) return null
+        return accountCurrency === 'USD' ? 1000 / Number(usdJpyRate) : 1000 / Number(usdJpyRate)
+      case 'nonJpyCross': return 10
+      case 'cfd': return 10
+      case 'crypto': return 1
+      case 'metal': return selectedPair.includes('XAG') ? 50 : 10
+      default: return 10
+    }
+  }
+
+  const pipValue = getPipValue()
 
   const standardLots = (Number(stopPipsInput) > 0 && pipValue > 0 && riskAmt > 0)
     ? riskAmt / (Number(stopPipsInput) * pipValue) : null
@@ -2103,6 +2128,11 @@ function PositionCalc() {
           <Field label='Stop Loss in Pips'>
             <input type='number' step='any' className={inputCls} value={stopPipsInput} onChange={(e) => { setStopPipsInput(e.target.value); setCalculated(false) }} placeholder='e.g. 10' />
           </Field>
+          {needsJpyRate && (
+            <Field label='USD/JPY Rate' hint='e.g. 157.50'>
+              <input type='number' step='any' className={inputCls} value={usdJpyRate} onChange={(e) => { setUsdJpyRate(e.target.value); setCalculated(false) }} placeholder='e.g. 157.50' />
+            </Field>
+          )}
           <button className={btnPrimary} onClick={doCalculate} disabled={!Number(stopPipsInput)}>Calculate</button>
         </div>
 
