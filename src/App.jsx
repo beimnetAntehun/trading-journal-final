@@ -1,7 +1,8 @@
 // src/App.jsx
 import React, {
-  useState, useEffect, useMemo, useRef, useCallback, createContext, useContext,
+  useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy,
 } from 'react'
+import { useStore, StoreProvider } from './context/StoreContext'
 import {
   ResponsiveContainer, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, Cell, ReferenceLine,
@@ -18,7 +19,8 @@ import { classifySession, sessionMetrics, sessionDayHeatmap, holdingTime, fmtHol
 import { computeMetrics, getMetricDefinitions } from './lib/advancedMetrics'
 import { strategyMetrics } from './lib/strategyLab'
 import { QUOTES, getRandomQuote, getQuoteOfDay, searchQuotes, getAuthors, getQuotesByAuthor, getQuoteCount } from './lib/quotes'
-import PlaybookModule from './PlaybookModule'
+const PlaybookModule = lazy(() => import('./PlaybookModule'))
+const SpinnerPlaceholder = () => <div className='flex items-center justify-center py-10 text-slate-400'><div className='h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-indigo-500' /><span className='ml-2 text-xs'>Loading module…</span></div>
 
 /* ============================ UI primitives ============================ */
 const cx = (...a) => a.filter(Boolean).join(' ')
@@ -90,58 +92,6 @@ const Spinner = () => (
     <span className='ml-3 text-sm'>Loading your journal…</span>
   </div>
 )
-
-/* ============================ Store / context ============================ */
-const StoreCtx = createContext(null)
-const useStore = () => useContext(StoreCtx)
-
-function StoreProvider({ children }) {
-  const [state, setState] = useState(null) // null => loading
-
-  useEffect(() => {
-    // Async wrapper so a real API (fetch) can be dropped into lib/storage.
-    let alive = true
-    Promise.resolve(db.load()).then((s) => { if (alive) setState(s) })
-    return () => { alive = false }
-  }, [])
-
-  useEffect(() => { if (state) db.save(state) }, [state])
-
-  const update = useCallback((fn) => setState((s) => fn(structuredClone(s))), [])
-
-  const api = useMemo(() => ({
-    state,
-    setTheme: (theme) => update((s) => { s.settings.theme = theme; return s }),
-    setActiveAccount: (id) => update((s) => { s.activeAccountId = id; return s }),
-    addAccount: (a) => update((s) => { s.accounts.push({ id: uid('acc'), startingBalance: 0, type: 'live', ...a }); return s }),
-    upsertTrade: (t) => update((s) => {
-      const i = s.trades.findIndex((x) => x.id === t.id)
-      if (i >= 0) s.trades[i] = t
-      else s.trades.push({ ...t, id: uid('trd'), createdAt: Date.now() })
-      return s
-    }),
-    patchTrade: (id, patch) => update((s) => {
-      const i = s.trades.findIndex((x) => x.id === id)
-      if (i >= 0) s.trades[i] = { ...s.trades[i], ...patch }
-      return s
-    }),
-    deleteTrade: (id) => update((s) => { s.trades = s.trades.filter((x) => x.id !== id); return s }),
-    importTrades: (list) => update((s) => { s.trades.push(...list); return s }),
-    addCashflow: (c) => update((s) => { s.cashflows.push({ id: uid('cf'), ...c }); return s }),
-    deleteCashflow: (id) => update((s) => { s.cashflows = s.cashflows.filter((x) => x.id !== id); return s }),
-    setTags: (key, arr) => update((s) => { s.tags[key] = arr; return s }),
-    setChecklist: (arr) => update((s) => { s.checklist = arr; return s }),
-    setPrompts: (arr) => update((s) => { s.reflectionPrompts = arr; return s }),
-    setRiskPlan: (rp) => update((s) => { s.riskPlan = { ...s.riskPlan, ...rp }; return s }),
-    setTradingPlan: (tp) => update((s) => { s.tradingPlan = { ...s.tradingPlan, ...tp }; return s }),
-    setPlaybookModels: (models) => update((s) => { s.playbookModels = models; return s }),
-    setGoals: (g) => update((s) => { s.goals = { ...s.goals, ...g }; return s }),
-    hardReset: () => setState(db.reset()),
-    importJson: (json) => setState(db.importJson(json)),
-  }), [state, update])
-
-  return <StoreCtx.Provider value={api}>{children}</StoreCtx.Provider>
-}
 
 /* ============================ Selectors / filters ============================ */
 const emptyFilters = { from: '', to: '', symbol: '', strategy: '', direction: '', emotion: '', account: '', dayOfWeek: '', hour: '' }
@@ -4042,7 +3992,7 @@ function Shell() {
           {view === 'score' && <DisciplineScoreView trades={visible} />}
           {view === 'goals' && <GoalCenterView trades={visible} />}
           {view === 'plan' && <TradingPlanView />}
-          {view === 'playbook' && <PlaybookModule allTrades={state.trades} models={state.playbookModels || []} onModelsChange={(m) => setPlaybookModels(m)} />}
+          {view === 'playbook' && <Suspense fallback={<div className='flex justify-center py-10'><Spinner /></div>}><PlaybookModule allTrades={state.trades} models={state.playbookModels || []} onModelsChange={(m) => setPlaybookModels(m)} /></Suspense>}
           {view === 'strategies' && <StrategyLabView trades={visible} />}
           {view === 'sessions' && <SessionAnalysisView trades={visible} />}
           {view === 'mistakes' && <MistakeAnalyticsView trades={visible} />}
