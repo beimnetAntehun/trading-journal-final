@@ -2040,65 +2040,19 @@ function CalendarHeat({ trades, onDrillDay, compact }) {
 const clampPct = (pct) => Math.max(0, Math.min(100, pct))
 
 const FOREX_PAIRS = [
-  // Alphabetically sorted — all pairs
-  { pair: 'AUD/CAD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'AUD/CHF', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'AUD/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
-  { pair: 'AUD/NZD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'AUD/USD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'BTC/USD', pipValue: 1, description: '1 standard lot = 1 BTC' },
-  { pair: 'CAD/CHF', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'CAD/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
-  { pair: 'CHF/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
-  { pair: 'ETH/USD', pipValue: 1, description: '1 standard lot = 1 ETH' },
-  { pair: 'EUR/AUD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/CAD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/CHF', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/CZK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/DKK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/GBP', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/HUF', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/NOK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/NZD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/PLN', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/SEK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/TRY', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/USD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'EUR/ZAR', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'GBP/AUD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'GBP/CAD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'GBP/CHF', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'GBP/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
-  { pair: 'GBP/NOK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'GBP/NZD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'GBP/SEK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'GBP/USD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'GER40', pipValue: 10, description: '1 standard lot = 1 CFD' },
-  { pair: 'NAS100', pipValue: 10, description: '1 standard lot = 1 CFD' },
-  { pair: 'NZD/CAD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'NZD/CHF', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'NZD/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
-  { pair: 'NZD/USD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'SPX500', pipValue: 10, description: '1 standard lot = 1 CFD' },
-  { pair: 'US30', pipValue: 10, description: '1 standard lot = 1 CFD' },
-  { pair: 'USD/CAD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/CHF', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/CNH', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/CZK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/DKK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/HKD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/HUF', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/MXN', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/NOK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/PLN', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/SEK', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/SGD', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/TRY', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'USD/ZAR', pipValue: 10, description: '1 standard lot = 100,000 units' },
-  { pair: 'XAG/USD (Silver)', pipValue: 50, description: '1 standard lot = 5,000 oz' },
-  { pair: 'XAU/USD (Gold)', pipValue: 10, description: '1 standard lot = 100 oz' },
+  'AUD/CAD', 'AUD/CHF', 'AUD/JPY', 'AUD/NZD', 'AUD/USD',
+  'BTC/USD', 'CAD/CHF', 'CAD/JPY', 'CHF/JPY', 'ETH/USD',
+  'EUR/AUD', 'EUR/CAD', 'EUR/CHF', 'EUR/CZK', 'EUR/DKK',
+  'EUR/GBP', 'EUR/HUF', 'EUR/JPY', 'EUR/NOK', 'EUR/NZD',
+  'EUR/PLN', 'EUR/SEK', 'EUR/TRY', 'EUR/USD', 'EUR/ZAR',
+  'GBP/AUD', 'GBP/CAD', 'GBP/CHF', 'GBP/JPY', 'GBP/NOK',
+  'GBP/NZD', 'GBP/SEK', 'GBP/USD',
+  'GER40', 'NAS100', 'NZD/CAD', 'NZD/CHF', 'NZD/JPY', 'NZD/USD',
+  'SPX500', 'US30',
+  'USD/CAD', 'USD/CHF', 'USD/CNH', 'USD/CZK', 'USD/DKK',
+  'USD/HKD', 'USD/HUF', 'USD/JPY', 'USD/MXN', 'USD/NOK',
+  'USD/PLN', 'USD/SEK', 'USD/SGD', 'USD/TRY', 'USD/ZAR',
+  'XAG/USD (Silver)', 'XAU/USD (Gold)',
 ]
 
 function PositionCalc() {
@@ -2108,24 +2062,52 @@ function PositionCalc() {
   const [riskPct, setRiskPct] = useState(state.riskPlan.riskPerTradePct)
   const [selectedPair, setSelectedPair] = useState('EUR/USD')
   const [stopPipsInput, setStopPipsInput] = useState('')
+  const [currentPrice, setCurrentPrice] = useState('')
   const [calculated, setCalculated] = useState(false)
   const [accountCurrency, setAccountCurrency] = useState('USD')
 
-  const pairInfo = FOREX_PAIRS.find((p) => p.pair === selectedPair) || FOREX_PAIRS[0]
-  const riskAmt = balance * riskPct / 100
-  const stopPips = Number(stopPipsInput) || 0
-  const pipValue = pairInfo.pipValue
+  const isJpyPair = selectedPair.includes('JPY')
+  const isGoldOrSilver = selectedPair.includes('XAU') || selectedPair.includes('XAG')
+  const isCfd = ['GER40', 'NAS100', 'SPX500', 'US30'].includes(selectedPair)
+  const isCrypto = ['BTC/', 'ETH/'].some((p) => selectedPair.startsWith(p))
+  const isForex = !isCfd && !isGoldOrSilver && !isCrypto
+  const isUsdQuote = ['EUR/', 'GBP/', 'AUD/', 'NZD/', 'XAU/', 'XAG/'].some((p) => selectedPair.startsWith(p)) && selectedPair.includes('/USD')
+  const isUsdBase = selectedPair.startsWith('USD/') && isForex
+  const pipDecimal = isJpyPair ? 0.01 : 0.0001
 
-  // Standard lots = risk amount / (stop loss in pips × pip value)
-  const standardLots = stopPips > 0 && pipValue > 0 ? riskAmt / (stopPips * pipValue) : null
+  const riskAmt = balance * riskPct / 100
+
+  // Calculate pip value in account currency for 1 standard lot
+  function calcPipValue(pair, price) {
+    if (isCfd) return 10
+    if (isCrypto) return 1
+    if (isGoldOrSilver) return selectedPair.includes('XAG') ? 50 : 10
+    if (isUsdQuote) return 10
+    if (isUsdBase) {
+      if (!price) return null
+      return accountCurrency === 'USD' ? 10 / Number(price) : 10 / Number(price)
+    }
+    // Cross pairs: JPY crosses need USD/JPY rate approximated from pair price
+    if (!price) return null
+    const pv = pipDecimal * 100000
+    if (isJpyPair) return accountCurrency === 'USD' ? pv / Number(price) : pv / Number(price)
+    return pv / Number(price)
+  }
+
+  const pipValue = currentPrice ? calcPipValue(selectedPair, Number(currentPrice)) : null
+
+  const standardLots = (stopPipsInput && pipValue && riskAmt > 0 && Number(stopPipsInput) > 0)
+    ? riskAmt / (Number(stopPipsInput) * pipValue) : null
   const units = standardLots != null ? standardLots * 100000 : null
   const miniLots = standardLots != null ? standardLots * 10 : null
   const microLots = standardLots != null ? standardLots * 100 : null
   const nanoLots = standardLots != null ? standardLots * 1000 : null
 
   const doCalculate = () => {
-    if (stopPips > 0 && balance > 0) setCalculated(true)
+    if (Number(stopPipsInput) > 0 && balance > 0 && Number(currentPrice) > 0) setCalculated(true)
   }
+
+  const needsPrice = !isUsdQuote && !isCfd
 
   return (
     <Card title='Lot Size Calculator'>
@@ -2133,7 +2115,7 @@ function PositionCalc() {
         <div className='space-y-3'>
           <Field label='Currency Pair'>
             <select className={inputCls} value={selectedPair} onChange={(e) => { setSelectedPair(e.target.value); setCalculated(false) }}>
-              {FOREX_PAIRS.map((p) => <option key={p.pair} value={p.pair}>{p.pair}</option>)}
+              {FOREX_PAIRS.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
           </Field>
           <Field label='Account Currency'>
@@ -2150,7 +2132,10 @@ function PositionCalc() {
           <Field label='Stop Loss in Pips'>
             <input type='number' step='any' className={inputCls} value={stopPipsInput} onChange={(e) => { setStopPipsInput(e.target.value); setCalculated(false) }} placeholder='e.g. 10' />
           </Field>
-          <button className={btnPrimary} onClick={doCalculate}>Calculate</button>
+          <Field label={isCfd ? 'Current Price (optional)' : 'Current Price'} hint={needsPrice ? 'Required for accurate pip value' : ''}>
+            <input type='number' step='any' className={inputCls} value={currentPrice} onChange={(e) => { setCurrentPrice(e.target.value); setCalculated(false) }} placeholder={isUsdQuote ? 'Optional' : 'e.g. 150.50'} />
+          </Field>
+          <button className={btnPrimary} onClick={doCalculate} disabled={!Number(stopPipsInput) || Number(currentPrice) <= 0}>Calculate</button>
         </div>
 
         <div className='space-y-3'>
@@ -2170,16 +2155,15 @@ function PositionCalc() {
                   <div className='font-semibold tabular-nums'>{nanoLots != null ? nanoLots.toFixed(4) : '—'}</div>
                 </div>
               </div>
-              <div className='rounded-lg border border-slate-200 p-2 text-[10px] text-slate-400 dark:border-slate-700'>
-                <p>1 standard lot of {selectedPair} = 100,000 units.</p>
-                <p>1 mini lot of {selectedPair} = 10,000 units.</p>
-                <p>1 micro lot of {selectedPair} = 1,000 units.</p>
-                <p>1 nano lot of {selectedPair} = 100 units.</p>
+              <div className='rounded-lg border border-indigo-500/20 bg-indigo-500/5 p-2 text-[10px] text-slate-500'>
+                <p>Pip value: <span className='font-semibold tabular-nums'>{fmtMoney(pipValue ?? 0, accountCurrency)}</span> per standard lot</p>
+                <p>1 pip = {pipDecimal} for {selectedPair}</p>
+                <p className='mt-1'>1 standard lot = 100,000 units · 1 mini lot = 10,000 units · 1 micro lot = 1,000 units · 1 nano lot = 100 units</p>
               </div>
             </>
           ) : (
             <div className='flex h-full items-center justify-center rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-400 dark:border-slate-700'>
-              <div><div className='mb-1 text-3xl'>📏</div><p>Enter your account details and stop loss in pips, then click Calculate.</p></div>
+              <div><div className='mb-1 text-3xl'>📏</div><p>Enter your account details, stop loss in pips, and current price, then click Calculate.</p></div>
             </div>
           )}
         </div>
