@@ -2040,19 +2040,19 @@ function CalendarHeat({ trades, onDrillDay, compact }) {
 const clampPct = (pct) => Math.max(0, Math.min(100, pct))
 
 const FOREX_PAIRS = [
-  'AUD/CAD', 'AUD/CHF', 'AUD/JPY', 'AUD/NZD', 'AUD/USD',
-  'BTC/USD', 'CAD/CHF', 'CAD/JPY', 'CHF/JPY', 'ETH/USD',
-  'EUR/AUD', 'EUR/CAD', 'EUR/CHF', 'EUR/CZK', 'EUR/DKK',
-  'EUR/GBP', 'EUR/HUF', 'EUR/JPY', 'EUR/NOK', 'EUR/NZD',
-  'EUR/PLN', 'EUR/SEK', 'EUR/TRY', 'EUR/USD', 'EUR/ZAR',
-  'GBP/AUD', 'GBP/CAD', 'GBP/CHF', 'GBP/JPY', 'GBP/NOK',
-  'GBP/NZD', 'GBP/SEK', 'GBP/USD',
-  'GER40', 'NAS100', 'NZD/CAD', 'NZD/CHF', 'NZD/JPY', 'NZD/USD',
-  'SPX500', 'US30',
-  'USD/CAD', 'USD/CHF', 'USD/CNH', 'USD/CZK', 'USD/DKK',
-  'USD/HKD', 'USD/HUF', 'USD/JPY', 'USD/MXN', 'USD/NOK',
-  'USD/PLN', 'USD/SEK', 'USD/SGD', 'USD/TRY', 'USD/ZAR',
-  'XAG/USD (Silver)', 'XAU/USD (Gold)',
+  { pair: 'AUD/CAD', pip: 10 }, { pair: 'AUD/CHF', pip: 10 }, { pair: 'AUD/JPY', pip: 9.3 }, { pair: 'AUD/NZD', pip: 10 }, { pair: 'AUD/USD', pip: 10 },
+  { pair: 'BTC/USD', pip: 1 }, { pair: 'CAD/CHF', pip: 10 }, { pair: 'CAD/JPY', pip: 9.3 }, { pair: 'CHF/JPY', pip: 9.3 }, { pair: 'ETH/USD', pip: 1 },
+  { pair: 'EUR/AUD', pip: 10 }, { pair: 'EUR/CAD', pip: 10 }, { pair: 'EUR/CHF', pip: 10 }, { pair: 'EUR/CZK', pip: 10 }, { pair: 'EUR/DKK', pip: 10 },
+  { pair: 'EUR/GBP', pip: 10 }, { pair: 'EUR/HUF', pip: 10 }, { pair: 'EUR/JPY', pip: 9.3 }, { pair: 'EUR/NOK', pip: 10 }, { pair: 'EUR/NZD', pip: 10 },
+  { pair: 'EUR/PLN', pip: 10 }, { pair: 'EUR/SEK', pip: 10 }, { pair: 'EUR/TRY', pip: 10 }, { pair: 'EUR/USD', pip: 10 }, { pair: 'EUR/ZAR', pip: 10 },
+  { pair: 'GBP/AUD', pip: 10 }, { pair: 'GBP/CAD', pip: 10 }, { pair: 'GBP/CHF', pip: 10 }, { pair: 'GBP/JPY', pip: 9.3 }, { pair: 'GBP/NOK', pip: 10 },
+  { pair: 'GBP/NZD', pip: 10 }, { pair: 'GBP/SEK', pip: 10 }, { pair: 'GBP/USD', pip: 10 },
+  { pair: 'GER40', pip: 10 }, { pair: 'NAS100', pip: 10 }, { pair: 'NZD/CAD', pip: 10 }, { pair: 'NZD/CHF', pip: 10 }, { pair: 'NZD/JPY', pip: 9.3 }, { pair: 'NZD/USD', pip: 10 },
+  { pair: 'SPX500', pip: 10 }, { pair: 'US30', pip: 10 },
+  { pair: 'USD/CAD', pip: 10 }, { pair: 'USD/CHF', pip: 10 }, { pair: 'USD/CNH', pip: 10 }, { pair: 'USD/CZK', pip: 10 }, { pair: 'USD/DKK', pip: 10 },
+  { pair: 'USD/HKD', pip: 10 }, { pair: 'USD/HUF', pip: 10 }, { pair: 'USD/JPY', pip: 9.3 }, { pair: 'USD/MXN', pip: 10 }, { pair: 'USD/NOK', pip: 10 },
+  { pair: 'USD/PLN', pip: 10 }, { pair: 'USD/SEK', pip: 10 }, { pair: 'USD/SGD', pip: 10 }, { pair: 'USD/TRY', pip: 10 }, { pair: 'USD/ZAR', pip: 10 },
+  { pair: 'XAG/USD (Silver)', pip: 50 }, { pair: 'XAU/USD (Gold)', pip: 10 },
 ]
 
 function PositionCalc() {
@@ -2062,41 +2062,14 @@ function PositionCalc() {
   const [riskPct, setRiskPct] = useState(state.riskPlan.riskPerTradePct)
   const [selectedPair, setSelectedPair] = useState('EUR/USD')
   const [stopPipsInput, setStopPipsInput] = useState('')
-  const [currentPrice, setCurrentPrice] = useState('')
   const [calculated, setCalculated] = useState(false)
   const [accountCurrency, setAccountCurrency] = useState('USD')
 
-  const isJpyPair = selectedPair.includes('JPY')
-  const isGoldOrSilver = selectedPair.includes('XAU') || selectedPair.includes('XAG')
-  const isCfd = ['GER40', 'NAS100', 'SPX500', 'US30'].includes(selectedPair)
-  const isCrypto = ['BTC/', 'ETH/'].some((p) => selectedPair.startsWith(p))
-  const isForex = !isCfd && !isGoldOrSilver && !isCrypto
-  const isUsdQuote = ['EUR/', 'GBP/', 'AUD/', 'NZD/', 'XAU/', 'XAG/'].some((p) => selectedPair.startsWith(p)) && selectedPair.includes('/USD')
-  const isUsdBase = selectedPair.startsWith('USD/') && isForex
-  const pipDecimal = isJpyPair ? 0.01 : 0.0001
-
+  const pairInfo = FOREX_PAIRS.find((p) => p.pair === selectedPair) || FOREX_PAIRS[0]
+  const pipValue = pairInfo.pip
   const riskAmt = balance * riskPct / 100
 
-  // Calculate pip value in account currency for 1 standard lot
-  function calcPipValue(pair, price) {
-    if (isCfd) return 10
-    if (isCrypto) return 1
-    if (isGoldOrSilver) return selectedPair.includes('XAG') ? 50 : 10
-    if (isUsdQuote) return 10
-    if (isUsdBase) {
-      if (!price) return null
-      return accountCurrency === 'USD' ? 10 / Number(price) : 10 / Number(price)
-    }
-    // Cross pairs: JPY crosses need USD/JPY rate approximated from pair price
-    if (!price) return null
-    const pv = pipDecimal * 100000
-    if (isJpyPair) return accountCurrency === 'USD' ? pv / Number(price) : pv / Number(price)
-    return pv / Number(price)
-  }
-
-  const pipValue = currentPrice ? calcPipValue(selectedPair, Number(currentPrice)) : null
-
-  const standardLots = (stopPipsInput && pipValue && riskAmt > 0 && Number(stopPipsInput) > 0)
+  const standardLots = (Number(stopPipsInput) > 0 && pipValue > 0 && riskAmt > 0)
     ? riskAmt / (Number(stopPipsInput) * pipValue) : null
   const units = standardLots != null ? standardLots * 100000 : null
   const miniLots = standardLots != null ? standardLots * 10 : null
@@ -2104,10 +2077,8 @@ function PositionCalc() {
   const nanoLots = standardLots != null ? standardLots * 1000 : null
 
   const doCalculate = () => {
-    if (Number(stopPipsInput) > 0 && balance > 0 && Number(currentPrice) > 0) setCalculated(true)
+    if (Number(stopPipsInput) > 0 && balance > 0) setCalculated(true)
   }
-
-  const needsPrice = !isUsdQuote && !isCfd
 
   return (
     <Card title='Lot Size Calculator'>
@@ -2115,7 +2086,7 @@ function PositionCalc() {
         <div className='space-y-3'>
           <Field label='Currency Pair'>
             <select className={inputCls} value={selectedPair} onChange={(e) => { setSelectedPair(e.target.value); setCalculated(false) }}>
-              {FOREX_PAIRS.map((p) => <option key={p} value={p}>{p}</option>)}
+              {FOREX_PAIRS.map((p) => <option key={p.pair} value={p.pair}>{p.pair}</option>)}
             </select>
           </Field>
           <Field label='Account Currency'>
@@ -2132,10 +2103,7 @@ function PositionCalc() {
           <Field label='Stop Loss in Pips'>
             <input type='number' step='any' className={inputCls} value={stopPipsInput} onChange={(e) => { setStopPipsInput(e.target.value); setCalculated(false) }} placeholder='e.g. 10' />
           </Field>
-          <Field label={isCfd ? 'Current Price (optional)' : 'Current Price'} hint={needsPrice ? 'Required for accurate pip value' : ''}>
-            <input type='number' step='any' className={inputCls} value={currentPrice} onChange={(e) => { setCurrentPrice(e.target.value); setCalculated(false) }} placeholder={isUsdQuote ? 'Optional' : 'e.g. 150.50'} />
-          </Field>
-          <button className={btnPrimary} onClick={doCalculate} disabled={!Number(stopPipsInput) || Number(currentPrice) <= 0}>Calculate</button>
+          <button className={btnPrimary} onClick={doCalculate} disabled={!Number(stopPipsInput)}>Calculate</button>
         </div>
 
         <div className='space-y-3'>
@@ -2156,14 +2124,13 @@ function PositionCalc() {
                 </div>
               </div>
               <div className='rounded-lg border border-indigo-500/20 bg-indigo-500/5 p-2 text-[10px] text-slate-500'>
-                <p>Pip value: <span className='font-semibold tabular-nums'>{fmtMoney(pipValue ?? 0, accountCurrency)}</span> per standard lot</p>
-                <p>1 pip = {pipDecimal} for {selectedPair}</p>
-                <p className='mt-1'>1 standard lot = 100,000 units · 1 mini lot = 10,000 units · 1 micro lot = 1,000 units · 1 nano lot = 100 units</p>
+                <p>Pip value: <span className='font-semibold tabular-nums'>{fmtMoney(pipValue, accountCurrency)}</span> per standard lot</p>
+                <p>1 standard lot = 100,000 units · 1 mini lot = 10,000 units · 1 micro lot = 1,000 units · 1 nano lot = 100 units</p>
               </div>
             </>
           ) : (
             <div className='flex h-full items-center justify-center rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-400 dark:border-slate-700'>
-              <div><div className='mb-1 text-3xl'>📏</div><p>Enter your account details, stop loss in pips, and current price, then click Calculate.</p></div>
+              <div><div className='mb-1 text-3xl'>📏</div><p>Enter your account details and stop loss in pips, then click Calculate.</p></div>
             </div>
           )}
         </div>
