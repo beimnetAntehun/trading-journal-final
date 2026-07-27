@@ -2039,27 +2039,114 @@ function CalendarHeat({ trades, onDrillDay, compact }) {
 /* ============================ Risk & money management ============================ */
 const clampPct = (pct) => Math.max(0, Math.min(100, pct))
 
+const FOREX_PAIRS = [
+  { pair: 'EUR/USD', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'GBP/USD', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'USD/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
+  { pair: 'USD/CHF', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'AUD/USD', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'USD/CAD', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'NZD/USD', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'EUR/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
+  { pair: 'GBP/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
+  { pair: 'EUR/GBP', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'AUD/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
+  { pair: 'CHF/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
+  { pair: 'NZD/JPY', pipValue: 9.3, description: '1 standard lot = 100,000 units' },
+  { pair: 'EUR/AUD', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'GBP/AUD', pipValue: 10, description: '1 standard lot = 100,000 units' },
+  { pair: 'XAU/USD (Gold)', pipValue: 10, description: '1 standard lot = 100 oz' },
+  { pair: 'XAG/USD (Silver)', pipValue: 50, description: '1 standard lot = 5,000 oz' },
+  { pair: 'US30', pipValue: 10, description: '1 standard lot = 1 CFD' },
+  { pair: 'NAS100', pipValue: 10, description: '1 standard lot = 1 CFD' },
+  { pair: 'SPX500', pipValue: 10, description: '1 standard lot = 1 CFD' },
+  { pair: 'GER40', pipValue: 10, description: '1 standard lot = 1 CFD' },
+  { pair: 'BTC/USD', pipValue: 1, description: '1 standard lot = 1 BTC' },
+  { pair: 'ETH/USD', pipValue: 1, description: '1 standard lot = 1 ETH' },
+]
+
 function PositionCalc() {
   const { state } = useStore()
   const acct = state.accounts.find((a) => a.id === state.activeAccountId)
   const [balance, setBalance] = useState(acct ? acct.startingBalance : 10000)
   const [riskPct, setRiskPct] = useState(state.riskPlan.riskPerTradePct)
-  const [entry, setEntry] = useState('')
-  const [stop, setStop] = useState('')
+  const [selectedPair, setSelectedPair] = useState('EUR/USD')
+  const [stopPipsInput, setStopPipsInput] = useState('')
+  const [calculated, setCalculated] = useState(false)
+  const [accountCurrency, setAccountCurrency] = useState('USD')
+
+  const pairInfo = FOREX_PAIRS.find((p) => p.pair === selectedPair) || FOREX_PAIRS[0]
   const riskAmt = balance * riskPct / 100
-  const perUnit = Math.abs(Number(entry) - Number(stop))
-  const size = perUnit ? riskAmt / perUnit : null
+  const stopPips = Number(stopPipsInput) || 0
+  const pipValue = pairInfo.pipValue
+
+  // Standard lots = risk amount / (stop loss in pips × pip value)
+  const standardLots = stopPips > 0 && pipValue > 0 ? riskAmt / (stopPips * pipValue) : null
+  const units = standardLots != null ? standardLots * 100000 : null
+  const miniLots = standardLots != null ? standardLots * 10 : null
+  const microLots = standardLots != null ? standardLots * 100 : null
+  const nanoLots = standardLots != null ? standardLots * 1000 : null
+
+  const doCalculate = () => {
+    if (stopPips > 0 && balance > 0) setCalculated(true)
+  }
+
   return (
-    <Card title='Position size calculator'>
-      <div className='grid grid-cols-2 gap-3'>
-        <Field label='Account balance'><input type='number' className={inputCls} value={balance} onChange={(e) => setBalance(Number(e.target.value))} /></Field>
-        <Field label='Risk % per trade'><input type='number' step='any' className={inputCls} value={riskPct} onChange={(e) => setRiskPct(Number(e.target.value))} /></Field>
-        <Field label='Entry price'><input type='number' step='any' className={inputCls} value={entry} onChange={(e) => setEntry(e.target.value)} /></Field>
-        <Field label='Stop price'><input type='number' step='any' className={inputCls} value={stop} onChange={(e) => setStop(e.target.value)} /></Field>
-      </div>
-      <div className='mt-3 grid grid-cols-2 gap-3 rounded-lg bg-slate-100 p-3 text-sm dark:bg-slate-800/60'>
-        <div><div className='text-xs text-slate-500'>Risk amount</div><div className='font-semibold'>{fmtMoney(riskAmt)}</div></div>
-        <div><div className='text-xs text-slate-500'>Suggested size</div><div className='font-semibold text-indigo-500'>{size == null ? '—' : size.toFixed(2) + ' units'}</div></div>
+    <Card title='Lot Size Calculator'>
+      <div className='grid gap-3 sm:grid-cols-2'>
+        <div className='space-y-3'>
+          <Field label='Currency Pair'>
+            <select className={inputCls} value={selectedPair} onChange={(e) => { setSelectedPair(e.target.value); setCalculated(false) }}>
+              {FOREX_PAIRS.map((p) => <option key={p.pair} value={p.pair}>{p.pair}</option>)}
+            </select>
+          </Field>
+          <Field label='Account Currency'>
+            <select className={inputCls} value={accountCurrency} onChange={(e) => setAccountCurrency(e.target.value)}>
+              <option value='USD'>USD</option><option value='EUR'>EUR</option><option value='GBP'>GBP</option>
+            </select>
+          </Field>
+          <Field label='Account Balance'>
+            <input type='number' className={inputCls} value={balance} onChange={(e) => { setBalance(Number(e.target.value)); setCalculated(false) }} />
+          </Field>
+          <Field label='Risk %'>
+            <input type='number' step='any' className={inputCls} value={riskPct} onChange={(e) => { setRiskPct(Number(e.target.value)); setCalculated(false) }} />
+          </Field>
+          <Field label='Stop Loss in Pips'>
+            <input type='number' step='any' className={inputCls} value={stopPipsInput} onChange={(e) => { setStopPipsInput(e.target.value); setCalculated(false) }} placeholder='e.g. 10' />
+          </Field>
+          <button className={btnPrimary} onClick={doCalculate}>Calculate</button>
+        </div>
+
+        <div className='space-y-3'>
+          {calculated && standardLots != null ? (
+            <>
+              <div className='rounded-lg border border-indigo-500/20 bg-indigo-500/5 p-3 text-center'>
+                <div className='text-2xl font-bold text-indigo-500 tabular-nums'>{standardLots.toFixed(4)}</div>
+                <div className='text-xs text-slate-400'>Standard Lots</div>
+              </div>
+              <div className='grid grid-cols-2 gap-2 rounded-lg bg-slate-100 p-3 text-sm dark:bg-slate-800/60'>
+                <div><div className='text-xs text-slate-500'>Risk</div><div className='font-semibold tabular-nums'>{fmtMoney(riskAmt, accountCurrency)}</div></div>
+                <div><div className='text-xs text-slate-500'>Units</div><div className='font-semibold tabular-nums text-indigo-500'>{units != null ? units.toFixed(0) : '—'}</div></div>
+                <div><div className='text-xs text-slate-500'>Mini Lots</div><div className='font-semibold tabular-nums'>{miniLots != null ? miniLots.toFixed(4) : '—'}</div></div>
+                <div><div className='text-xs text-slate-500'>Micro Lots</div><div className='font-semibold tabular-nums'>{microLots != null ? microLots.toFixed(4) : '—'}</div></div>
+                <div className='col-span-2'>
+                  <div className='text-xs text-slate-500'>Nano Lots</div>
+                  <div className='font-semibold tabular-nums'>{nanoLots != null ? nanoLots.toFixed(4) : '—'}</div>
+                </div>
+              </div>
+              <div className='rounded-lg border border-slate-200 p-2 text-[10px] text-slate-400 dark:border-slate-700'>
+                <p>1 standard lot of {selectedPair} = 100,000 units.</p>
+                <p>1 mini lot of {selectedPair} = 10,000 units.</p>
+                <p>1 micro lot of {selectedPair} = 1,000 units.</p>
+                <p>1 nano lot of {selectedPair} = 100 units.</p>
+              </div>
+            </>
+          ) : (
+            <div className='flex h-full items-center justify-center rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-400 dark:border-slate-700'>
+              <div><div className='mb-1 text-3xl'>📏</div><p>Enter your account details and stop loss in pips, then click Calculate.</p></div>
+            </div>
+          )}
+        </div>
       </div>
     </Card>
   )
