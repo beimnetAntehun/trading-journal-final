@@ -2065,15 +2065,17 @@ const FOREX_PAIRS = [
 function PositionCalc() {
   const { state } = useStore()
   const acct = state.accounts.find((a) => a.id === state.activeAccountId)
-  const [balance, setBalance] = useState(acct ? acct.startingBalance : 10000)
-  const [riskPct, setRiskPct] = useState(state.riskPlan.riskPerTradePct)
+  const [balance, setBalance] = useState(String(acct ? acct.startingBalance : 10000))
+  const [riskPct, setRiskPct] = useState(String(state.riskPlan.riskPerTradePct))
   const [selectedPair, setSelectedPair] = useState('EUR/USD')
   const [stopPipsInput, setStopPipsInput] = useState('')
   const [calculated, setCalculated] = useState(false)
   const [accountCurrency, setAccountCurrency] = useState('USD')
 
   const pairInfo = FOREX_PAIRS.find((p) => p.pair === selectedPair) || FOREX_PAIRS[0]
-  const riskAmt = balance * riskPct / 100
+  const balNum = Number(balance) || 0
+  const riskPctNum = Number(riskPct) || 0
+  const riskAmt = balNum * riskPctNum / 100
 
   function getPipValue() {
     switch (pairInfo.type) {
@@ -2098,7 +2100,7 @@ function PositionCalc() {
   const nanoLots = standardLots != null ? standardLots * 1000 : null
 
   const doCalculate = () => {
-    if (Number(stopPipsInput) > 0 && balance > 0) setCalculated(true)
+    if (Number(stopPipsInput) > 0 && balNum > 0) setCalculated(true)
   }
 
   return (
@@ -2122,10 +2124,10 @@ function PositionCalc() {
             </select>
           </Field>
           <Field label='Account Balance'>
-            <input type='number' className={inputCls} value={balance} onChange={(e) => { setBalance(Number(e.target.value)); setCalculated(false) }} />
+            <input type='text' inputMode='numeric' className={inputCls} value={balance} onChange={(e) => { setBalance(e.target.value); setCalculated(false) }} />
           </Field>
           <Field label='Risk %'>
-            <input type='number' step='any' className={inputCls} value={riskPct} onChange={(e) => { setRiskPct(Number(e.target.value)); setCalculated(false) }} />
+            <input type='text' inputMode='decimal' className={inputCls} value={riskPct} onChange={(e) => { setRiskPct(e.target.value); setCalculated(false) }} />
           </Field>
           <Field label='Stop Loss in Pips'>
             <input type='number' step='any' className={inputCls} value={stopPipsInput} onChange={(e) => { setStopPipsInput(e.target.value); setCalculated(false) }} placeholder='e.g. 10' />
