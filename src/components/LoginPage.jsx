@@ -48,19 +48,20 @@ export function LoginPage({ onAuth }) {
   }
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-indigo-50 to-slate-100 dark:from-slate-950 dark:via-indigo-950 dark:to-slate-950 px-4'>
-      <div className='w-full max-w-md'>
+    <div className='login-page min-h-screen flex items-center justify-center px-4'>
+      <div className='login-overlay' />
+      <div className='w-full max-w-md login-content'>
         {/* Logo / Brand */}
         <div className='text-center mb-8'>
-          <div className='inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600 text-white text-3xl mb-4 shadow-lg shadow-indigo-500/25'>
+          <div className='inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-white text-3xl mb-4 shadow-lg shadow-indigo-500/20 backdrop-blur-sm'>
             📊
           </div>
-          <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>Trading Journal</h1>
-          <p className='text-sm text-slate-500 dark:text-slate-400 mt-1'>Track. Analyze. Improve.</p>
+          <h1 className='text-2xl font-bold text-white drop-shadow-lg'>Trading Journal</h1>
+          <p className='text-sm text-slate-400 mt-1 drop-shadow'>Track. Analyze. Improve.</p>
         </div>
 
         {/* Card */}
-        <div className='rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl shadow-slate-200/50 dark:shadow-none'>
+        <div className='login-card rounded-2xl p-6'>
           {/* Tab switcher */}
           <div className='flex rounded-lg bg-slate-100 dark:bg-slate-800 p-1 mb-6'>
             <button
