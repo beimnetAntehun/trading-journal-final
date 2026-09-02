@@ -11,7 +11,7 @@ import {
 import { db, uid } from './lib/storage'
 import {
   DIR, ASSET_CLASSES, tradePnl, tradePnlPct, rMultiple, riskPerTrade, isClosed,
-  stats, equityCurve, drawdownSeries, groupStats, DOW, fmtMoney, fmtPct,
+  stats, equityCurve, drawdownSeries, groupStats, DOW, fmtMoney, fmtPct, tradeDuration,
 } from './lib/calculations'
 import { parseCsv, rowsToObjects, toCsv, download } from './lib/csv'
 import { generateInsights } from './lib/insights'
@@ -58,8 +58,8 @@ function Modal({ open, onClose, title, children, wide }) {
   }, [open, onClose])
   if (!open) return null
   return (
-    <div className='fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 no-print' onMouseDown={onClose}>
-      <div className={cx(card, 'my-8 w-full p-5 shadow-2xl', wide ? 'max-w-5xl' : 'max-w-2xl')} onMouseDown={(e) => e.stopPropagation()}>
+    <div className='fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-2 sm:p-4 no-print' onMouseDown={onClose}>
+      <div className={cx(card, 'my-4 sm:my-8 w-full p-3 sm:p-5 shadow-2xl', wide ? 'max-w-5xl' : 'max-w-2xl')} onMouseDown={(e) => e.stopPropagation()}>
         <div className='mb-4 flex items-center justify-between'>
           <h2 className='text-lg font-semibold'>{title}</h2>
           <button className={btnGhost} onClick={onClose}>Esc ✕</button>
@@ -140,8 +140,19 @@ function StarRating({ value = 0, onChange }) {
   )
 }
 
-function TagChips({ options, value = [], onChange }) {
+function TagChips({ options, value = [], onChange, onAddCustom }) {
+  const [adding, setAdding] = useState(false)
+  const [customVal, setCustomVal] = useState('')
   const toggle = (o) => onChange(value.includes(o) ? value.filter((x) => x !== o) : [...value, o])
+  const addCustom = () => {
+    const v = customVal.trim()
+    if (v && !options.includes(v) && !value.includes(v)) {
+      onChange([...value, v])
+      if (onAddCustom) onAddCustom(v)
+    }
+    setCustomVal('')
+    setAdding(false)
+  }
   return (
     <div className='flex flex-wrap gap-1.5'>
       {options.map((o) => (
@@ -153,6 +164,25 @@ function TagChips({ options, value = [], onChange }) {
           {o}
         </button>
       ))}
+      {value.filter((v) => !options.includes(v)).map((o) => (
+        <button key={o} type='button' onClick={() => toggle(o)}
+          className={cx('rounded-full border px-2.5 py-1 text-xs',
+            value.includes(o)
+              ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+              : 'border-slate-300 dark:border-slate-700 text-slate-500 hover:border-slate-400')}>
+          {o}
+        </button>
+      ))}
+      {adding ? (
+        <input autoFocus value={customVal} onChange={(e) => setCustomVal(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') addCustom(); if (e.key === 'Escape') setAdding(false) }}
+          onBlur={addCustom}
+          className='w-20 rounded-full border border-indigo-400 bg-white px-2 py-0.5 text-xs dark:bg-slate-800'
+          placeholder='Tag...' />
+      ) : (
+        <button type='button' onClick={() => setAdding(true)}
+          className='rounded-full border border-dashed border-slate-400 px-2 py-1 text-xs text-slate-400 hover:border-indigo-400 hover:text-indigo-400'>+ Custom</button>
+      )}
     </div>
   )
 }
@@ -209,7 +239,7 @@ function validate(t) {
 }
 
 function TradeForm({ open, onClose, initial, quick }) {
-  const { state, upsertTrade } = useStore()
+  const { state, upsertTrade, setTags } = useStore()
   const [t, setT] = useState(initial)
   const [errors, setErrors] = useState({})
   const [reflect, setReflect] = useState(false)
@@ -364,11 +394,11 @@ function TradeForm({ open, onClose, initial, quick }) {
           {!quick && (
             <>
               <Field label='Emotional state'>
-                <TagChips options={state.tags.emotions} value={t.emotions} onChange={(v) => set('emotions', v)} />
+                <TagChips options={state.tags.emotions} value={t.emotions} onChange={(v) => set('emotions', v)} onAddCustom={(tag) => setTags('emotions', [...state.tags.emotions, tag])} />
               </Field>
 
               <Field label='Mistakes (if any)' hint='Be honest — this powers your mistake analytics'>
-                <TagChips options={state.tags.mistakes} value={t.mistakes || []} onChange={(v) => set('mistakes', v)} />
+                <TagChips options={state.tags.mistakes} value={t.mistakes || []} onChange={(v) => set('mistakes', v)} onAddCustom={(tag) => setTags('mistakes', [...state.tags.mistakes, tag])} />
               </Field>
 
               <div className='grid gap-3 md:grid-cols-2'>
@@ -476,6 +506,7 @@ const COLUMNS = [
   { key: 'grade', label: 'Grade', num: true },
   { key: 'pnl', label: 'P&L', num: true, calc: true },
   { key: 'r', label: 'R', num: true, calc: true },
+  { key: 'duration', label: 'Duration', calc: true },
 ]
 const NUMERIC_KEYS = ['entryPrice', 'exitPrice', 'size', 'grade', 'fees', 'stopLoss', 'takeProfit', 'leverage']
 
@@ -540,6 +571,7 @@ function TradeTable({ trades, onEdit }) {
                     else if (c.key === 'r') display = t.r == null ? '—' : t.r.toFixed(2)
                     else if (c.key === 'grade') display = t.grade ? '★'.repeat(t.grade) : '—'
                     else if (c.key === 'direction') display = t.direction === 'short' ? 'Short' : 'Long'
+                    else if (c.key === 'duration') display = tradeDuration(t) || '—'
                     else if (c.key.endsWith('Date')) display = t[c.key] ? t[c.key].replace('T', ' ') : '—'
                     return (
                       <td key={c.key}
@@ -3916,6 +3948,7 @@ function Shell() {
   const [editing, setEditing] = useState(null)
   const [importOpen, setImportOpen] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
+  const [mobileNav, setMobileNav] = useState(false)
 
   const dark = state.settings.theme === 'dark'
   useEffect(() => { document.documentElement.classList.toggle('dark', dark) }, [dark])
@@ -3952,7 +3985,27 @@ function Shell() {
   return (
     <div className='min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100'>
       <div className='mx-auto flex max-w-[1500px] flex-col md:flex-row'>
-        <aside className='no-print border-b border-slate-200 dark:border-slate-800 md:sticky md:top-0 md:h-screen md:w-56 md:shrink-0 md:border-b-0 md:border-r'>
+        {/* Mobile top bar */}
+        <div className='flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-800 md:hidden'>
+          <div className='flex items-center gap-2'><span className='text-xl'>📈</span><span className='font-bold'>TradeJournal</span></div>
+          <button onClick={() => setMobileNav(!mobileNav)} className='rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'>
+            {mobileNav ? '✕' : '☰'}
+          </button>
+        </div>
+        {/* Mobile nav dropdown */}
+        {mobileNav && (
+          <div className='border-b border-slate-200 bg-white px-2 py-2 dark:border-slate-800 dark:bg-slate-900 md:hidden'>
+            <div className='grid grid-cols-3 gap-1 sm:grid-cols-4'>
+              {NAV.map(([id, label, icon]) => (
+                <button key={id} onClick={() => { setView(id); setMobileNav(false) }}
+                  className={cx('flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-2 text-xs', view === id ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800')}>
+                  <span>{icon}</span>{label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        <aside className='no-print hidden border-b border-slate-200 dark:border-slate-800 md:block md:sticky md:top-0 md:h-screen md:w-56 md:shrink-0 md:border-b-0 md:border-r'>
           <div className='flex items-center gap-2 p-4'><span className='text-xl'>📈</span><span className='font-bold'>TradeJournal</span></div>
           <nav className='flex gap-1 overflow-x-auto px-2 pb-2 md:flex-col md:overflow-visible'>
             {NAV.map(([id, label, icon]) => (
@@ -3964,20 +4017,21 @@ function Shell() {
           </nav>
         </aside>
 
-        <main className='min-w-0 flex-1 p-4'>
+        <main className='min-w-0 flex-1 p-3 md:p-4'>
           <div className='mb-4 flex flex-wrap items-center justify-between gap-2 no-print'>
             <div className='flex items-center gap-2'>
-              <select className={cx(inputCls, 'w-auto')} value={state.activeAccountId} onChange={(e) => setActiveAccount(e.target.value)}>
+              <select className={cx(inputCls, 'w-auto text-xs')} value={state.activeAccountId} onChange={(e) => setActiveAccount(e.target.value)}>
                 {state.accounts.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.type})</option>)}
               </select>
-              <label className='flex items-center gap-1.5 text-xs text-slate-500'>
+              <label className='hidden sm:flex items-center gap-1.5 text-xs text-slate-500'>
                 <input type='checkbox' checked={aggregate} onChange={(e) => setAggregate(e.target.checked)} /> All accounts
               </label>
             </div>
-            <div className='flex items-center gap-2'>
-              <button className={btnGhost} onClick={() => setImportOpen(true)}>Import CSV</button>
-              <button className={btnGhost} onClick={() => openNew(true)}>Quick add <kbd className='ml-1 rounded bg-slate-200 px-1 dark:bg-slate-700'>q</kbd></button>
-              <button className={btnPrimary} onClick={() => openNew(false)}>+ New trade <kbd className='ml-1 rounded bg-indigo-500/60 px-1'>n</kbd></button>
+            <div className='flex items-center gap-1.5 sm:gap-2'>
+              <button className={cx(btnGhost, 'hidden sm:inline-flex')} onClick={() => setImportOpen(true)}>Import CSV</button>
+              <button className={btnGhost} onClick={() => setImportOpen(true)} title='Import CSV'>📥</button>
+              <button className={btnGhost} onClick={() => openNew(true)}>Quick add</button>
+              <button className={btnPrimary} onClick={() => openNew(false)}>+ New</button>
               <button className={btnGhost} onClick={() => setTheme(dark ? 'light' : 'dark')} title='Toggle theme'>{dark ? '☀' : '🌙'}</button>
               <button className={cx(btnGhost, 'text-xs')} onClick={() => setAuthOpen(true)} title='Cloud Sync'>
                 {user ? (cloudStatus === 'saved' ? '☁️' : cloudStatus === 'syncing' ? '🔄' : '☁️') : '🔓'}

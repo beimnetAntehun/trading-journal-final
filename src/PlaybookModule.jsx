@@ -240,6 +240,8 @@ function CreateModelPage({ models, onSave, onBack, editModel }) {
   const [model, setModel] = useState(() => editModel ? { ...editModel } : createModel())
   const [saved, setSaved] = useState(false)
   const [lightbox, setLightbox] = useState(null) // { src, alt }
+  const [galleryFilter, setGalleryFilter] = useState('')
+  const [gallerySearch, setGallerySearch] = useState('')
 
   const set = (k, v) => setModel((p) => ({ ...p, [k]: v }))
 
@@ -333,30 +335,91 @@ function CreateModelPage({ models, onSave, onBack, editModel }) {
       {/* Screenshot Gallery */}
       <div className={cx(card, 'p-3')}>
         <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Model Pictures / Screenshots</h4>
-        <p className='mb-3 text-[11px] text-slate-400'>Add chart screenshots, setup diagrams, or any images that describe your model.</p>
-        <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
-          {/* Existing images */}
-          {(model.screenshots || []).map((ss, i) => (
-            <div key={ss.id} className='group relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer' onClick={() => setLightbox({ src: ss.src, alt: ss.title })}>
-              <img src={ss.src} alt={ss.title || 'Screenshot'} className='aspect-video w-full object-cover' />
-              <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1'>
-                <button
-                  type='button'
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    const next = (model.screenshots || []).filter((_, j) => j !== i)
-                    set('screenshots', next)
-                  }}
-                  className='rounded bg-rose-500 px-2 py-1 text-[10px] text-white font-medium hover:bg-rose-600'
-                >✕ Remove</button>
-              </div>
-              {ss.title && (
-                <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1.5'>
-                  <span className='text-[10px] text-white font-medium truncate block'>{ss.title}</span>
-                </div>
+        <p className='mb-3 text-[11px] text-slate-400'>Add chart screenshots, setup diagrams, or any images that describe your model. Click tags to edit.</p>
+        {/* Search + Tag filter bar */}
+        {(model.screenshots || []).length > 0 && (
+          <div className='mb-3 space-y-2'>
+            <div className='flex items-center gap-2'>
+              <input value={gallerySearch} onChange={(e) => setGallerySearch(e.target.value)} placeholder='Search screenshots…'
+                className='w-full max-w-xs rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800' />
+              {(gallerySearch || galleryFilter) && (
+                <button onClick={() => { setGallerySearch(''); setGalleryFilter('') }} className='text-[10px] text-rose-400 hover:text-rose-500 whitespace-nowrap'>✕ Clear</button>
               )}
             </div>
-          ))}
+            {(() => {
+              const allTags = [...new Set((model.screenshots || []).flatMap((ss) => ss.tags || []))]
+              if (allTags.length === 0) return null
+              return (
+                <div className='flex flex-wrap gap-1.5'>
+                  <span className='text-[10px] text-slate-400 self-center mr-1'>Tags:</span>
+                  {allTags.map((tag) => (
+                    <button key={tag} onClick={() => setGalleryFilter(galleryFilter === tag ? '' : tag)}
+                      className={cx('rounded-full px-2 py-0.5 text-[10px] font-medium transition-colors', galleryFilter === tag ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600')}>{tag}</button>
+                  ))}
+                </div>
+              )
+            })()}
+          </div>
+        )}
+        <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
+          {/* Existing images */}
+          {(model.screenshots || [])
+            .filter((ss) => {
+              if (galleryFilter && !(ss.tags || []).includes(galleryFilter)) return false
+              if (gallerySearch) {
+                const q = gallerySearch.toLowerCase()
+                return (ss.title || '').toLowerCase().includes(q) || (ss.description || '').toLowerCase().includes(q) || (ss.notes || '').toLowerCase().includes(q) || (ss.tags || []).some((t) => t.toLowerCase().includes(q))
+              }
+              return true
+            })
+            .map((ss, i) => {
+              const realIdx = (model.screenshots || []).findIndex((s) => s.id === ss.id)
+              return (
+              <div key={ss.id} className='group relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer' onClick={() => setLightbox({ src: ss.src, alt: ss.title })}>
+                <img src={ss.src} alt={ss.title || 'Screenshot'} className='aspect-video w-full object-cover' />
+                <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1'>
+                  <button
+                    type='button'
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      const next = (model.screenshots || []).filter((_, j) => j !== realIdx)
+                      set('screenshots', next)
+                    }}
+                    className='rounded bg-rose-500 px-2 py-1 text-[10px] text-white font-medium hover:bg-rose-600'
+                  >✕ Remove</button>
+                </div>
+                {/* Tags display */}
+                {(ss.tags || []).length > 0 && (
+                  <div className='absolute top-1 left-1 flex flex-wrap gap-0.5'>
+                    {ss.tags.slice(0, 3).map((tag) => (
+                      <span key={tag} className='rounded bg-indigo-500/80 px-1 py-px text-[8px] text-white font-medium'>{tag}</span>
+                    ))}
+                    {ss.tags.length > 3 && <span className='rounded bg-slate-500/80 px-1 py-px text-[8px] text-white'>+{ss.tags.length - 3}</span>}
+                  </div>
+                )}
+                {ss.title && (
+                  <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1.5'>
+                    <span className='text-[10px] text-white font-medium truncate block'>{ss.title}</span>
+                  </div>
+                )}
+                {/* Tag editor (visible on hover) */}
+                <div className='absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity' onClick={(e) => e.stopPropagation()}>
+                  <input
+                    type='text'
+                    value={(ss.tags || []).join(', ')}
+                    onChange={(e) => {
+                      const newTags = e.target.value.split(',').map((t) => t.trim()).filter(Boolean)
+                      const next = [...(model.screenshots || [])]
+                      next[realIdx] = { ...next[realIdx], tags: newTags }
+                      set('screenshots', next)
+                    }}
+                    placeholder='Tags...'
+                    className='w-20 rounded bg-black/70 px-1.5 py-0.5 text-[9px] text-white placeholder-white/50 border border-white/20 focus:outline-none focus:border-indigo-400'
+                  />
+                </div>
+              </div>
+              )
+            })}
 
           {/* Add new image button */}
           <label className='flex aspect-video cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors bg-slate-50 dark:bg-slate-800/50'>

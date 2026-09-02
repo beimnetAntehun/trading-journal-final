@@ -132,4 +132,20 @@ export const fmtMoney = (n, c = 'USD') =>
     ? 'None'
     : new Intl.NumberFormat('en-US', { style: 'currency', currency: c }).format(n)
 
+export function tradeDuration(t) {
+  if (!t.entryDate) return null
+  const start = new Date(t.entryDate).getTime()
+  const end = t.exitDate ? new Date(t.exitDate).getTime() : Date.now()
+  const ms = end - start
+  if (ms < 0) return null
+  const mins = Math.floor(ms / 60000)
+  if (mins < 60) return `${mins}m`
+  const hrs = Math.floor(mins / 60)
+  const remMins = mins % 60
+  if (hrs < 24) return `${hrs}h ${remMins}m`
+  const days = Math.floor(hrs / 24)
+  const remHrs = hrs % 24
+  return `${days}d ${remHrs}h`
+}
+
 export const fmtPct = (n) => (n == null || isNaN(n) ? 'None' : n.toFixed(1) + '%')
