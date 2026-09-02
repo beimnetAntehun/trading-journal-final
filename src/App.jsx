@@ -4040,8 +4040,8 @@ function Shell() {
               <button className={btnGhost} onClick={() => setTheme(dark ? 'light' : 'dark')} title='Toggle theme'>{dark ? '☀' : '🌙'}</button>
               {user && (
                 <div className='relative' ref={userMenuRef}>
-                  <button className='flex items-center gap-1.5 rounded-full bg-indigo-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition-colors' onClick={() => setUserMenuOpen(!userMenuOpen)} title={user.email}>
-                    <span className='h-5 w-5 flex items-center justify-center rounded-full bg-indigo-500 text-[10px] font-bold text-white'>{(user.email || '?')[0].toUpperCase()}</span>
+                  <button className='flex items-center gap-1.5 rounded-full bg-slate-200 dark:bg-slate-700 px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors' onClick={() => setUserMenuOpen(!userMenuOpen)} title={user.email}>
+                    <span className='h-5 w-5 flex items-center justify-center rounded-full bg-slate-500 dark:bg-slate-500 text-[10px] font-bold text-white'>{(user.email || '?')[0].toUpperCase()}</span>
                     <span className='hidden sm:inline max-w-[100px] truncate'>{user.email?.split('@')[0]}</span>
                     <svg className='h-3 w-3 opacity-60' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' /></svg>
                   </button>
