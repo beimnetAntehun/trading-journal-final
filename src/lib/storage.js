@@ -31,7 +31,7 @@ const seed = () => ({
     'Did I follow my plan?',
   ],
   riskPlan: { riskPerTradePct: 1, dailyLossLimit: 300, weeklyLossLimit: 900 },
-  goals: { monthlyPnlTarget: 2000, monthlyRTarget: 10, maxDrawdownTarget: 10, minWinRate: 50, maxTradesPerDay: 5, maxDailyLoss: 300, targetProfitFactor: 2.0, achieved: {} },
+  goals: { monthlyPnlTarget: 0, monthlyRTarget: 0, maxDrawdownTarget: 0, minWinRate: 0, maxTradesPerDay: 0, maxDailyLoss: 0, targetProfitFactor: 0, achieved: {} },
   tradingPlan: { name: '', why: '', confluences: '', sessions: 'New York', tradesPerDay: 2, pairs: 'UJ', htf: 'Monthly, Weekly, Daily', entryTf: '15M, 1H', riskPerTrade: 1.5, lotSize: 0.01, rrTarget: '1:3 → BE', exitReasons: 'News events, consolidation', expectedWin: 3, expectedLoss: 1, docMethod: 'Notion', weeklyTarget: 9, monthlyTarget: 36, accountSize: 50, targetAccount: 500, habits: 'Go to gym, read trading books, watch podcasts, backtest & forward test', notes: 'Plan your trade, trade your plan. Don\'t be emotional. Risk what you afford. It\'s about staying in the game.' },
   playbookModels: [],
   settings: { theme: 'dark' },
@@ -43,7 +43,19 @@ function readAll() {
   if (cache) return cache
   try {
     const raw = localStorage.getItem(KEY)
-    cache = raw ? { ...seed(), ...JSON.parse(raw), tags: { ...seed().tags, ...(JSON.parse(raw).tags || {}) } } : seed()
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      // Reset old default goals so users start fresh
+      const oldDefaults = { monthlyPnlTarget: 2000, monthlyRTarget: 10, maxDrawdownTarget: 10, minWinRate: 50, maxTradesPerDay: 5, maxDailyLoss: 300, targetProfitFactor: 2.0 }
+      const goals = parsed.goals || {}
+      const isOldDefault = Object.keys(oldDefaults).every((k) => goals[k] === oldDefaults[k])
+      if (isOldDefault && Object.keys(goals).length <= 8) {
+        parsed.goals = seed().goals
+      }
+      cache = { ...seed(), ...parsed, tags: { ...seed().tags, ...(parsed.tags || {}) } }
+    } else {
+      cache = seed()
+    }
   } catch {
     cache = seed()
   }
