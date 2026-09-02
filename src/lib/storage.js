@@ -32,7 +32,7 @@ const seed = () => ({
   ],
   riskPlan: { riskPerTradePct: 1, dailyLossLimit: 300, weeklyLossLimit: 900 },
   goals: { monthlyPnlTarget: 0, monthlyRTarget: 0, maxDrawdownTarget: 0, minWinRate: 0, maxTradesPerDay: 0, maxDailyLoss: 0, targetProfitFactor: 0, achieved: {} },
-  tradingPlan: { name: '', why: '', confluences: '', sessions: 'New York', tradesPerDay: 2, pairs: 'UJ', htf: 'Monthly, Weekly, Daily', entryTf: '15M, 1H', riskPerTrade: 1.5, lotSize: 0.01, rrTarget: '1:3 → BE', exitReasons: 'News events, consolidation', expectedWin: 3, expectedLoss: 1, docMethod: 'Notion', weeklyTarget: 9, monthlyTarget: 36, accountSize: 50, targetAccount: 500, habits: 'Go to gym, read trading books, watch podcasts, backtest & forward test', notes: 'Plan your trade, trade your plan. Don\'t be emotional. Risk what you afford. It\'s about staying in the game.' },
+  tradingPlan: { name: '', why: '', confluences: '', sessions: '', tradesPerDay: 0, pairs: '', htf: '', entryTf: '', riskPerTrade: 0, lotSize: 0, rrTarget: '', exitReasons: '', expectedWin: 0, expectedLoss: 0, docMethod: '', weeklyTarget: 0, monthlyTarget: 0, accountSize: 0, targetAccount: 0, habits: '', notes: '' },
   playbookModels: [],
   settings: { theme: 'dark' },
 })
@@ -51,6 +51,11 @@ function readAll() {
       const isOldDefault = Object.keys(oldDefaults).every((k) => goals[k] === oldDefaults[k])
       if (isOldDefault && Object.keys(goals).length <= 8) {
         parsed.goals = seed().goals
+      }
+      // Reset old default trading plan so users start fresh
+      const tp = parsed.tradingPlan || {}
+      if (tp.sessions === 'New York' && tp.pairs === 'UJ' && tp.docMethod === 'Notion') {
+        parsed.tradingPlan = seed().tradingPlan
       }
       cache = { ...seed(), ...parsed, tags: { ...seed().tags, ...(parsed.tags || {}) } }
     } else {
