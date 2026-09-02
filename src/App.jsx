@@ -3756,7 +3756,7 @@ function TradingPlanView() {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div>
-          <h2 className='text-lg font-bold'>📜 My Trading Plan</h2>
+          <h2 className='text-lg font-bold'>📜 {plan.name ? `${plan.name}'s Trading Plan` : 'My Trading Plan'}</h2>
           <p className='text-xs text-slate-400 mt-0.5'>Tap any field to edit. Your plan is saved automatically.</p>
         </div>
         {saved && <span className='text-xs text-emerald-500 font-medium'>✓ Saved</span>}
