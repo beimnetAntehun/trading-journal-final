@@ -3,7 +3,7 @@
 // bodies of db.load / db.save with fetch() calls to your Postgres-backed API.
 // The rest of the app never touches localStorage directly.
 
-const KEY = 'trading-journal:v1'
+const KEY = 'trading-journal:v2'
 
 const seed = () => ({
   accounts: [
