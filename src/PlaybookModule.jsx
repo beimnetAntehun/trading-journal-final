@@ -312,6 +312,69 @@ function CreateModelPage({ models, onSave, onBack }) {
         <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Notes</h4>
         <textarea className={inputCls} rows={3} value={model.notes} onChange={(e) => set('notes', e.target.value)} placeholder='Additional notes about this model...' />
       </div>
+
+      {/* Screenshot Gallery */}
+      <div className={cx(card, 'p-3')}>
+        <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Model Pictures / Screenshots</h4>
+        <p className='mb-3 text-[11px] text-slate-400'>Add chart screenshots, setup diagrams, or any images that describe your model.</p>
+        <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
+          {/* Existing images */}
+          {(model.screenshots || []).map((ss, i) => (
+            <div key={ss.id} className='group relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700'>
+              <img src={ss.src} alt={ss.title || 'Screenshot'} className='aspect-video w-full object-cover' />
+              <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1'>
+                <button
+                  type='button'
+                  onClick={() => {
+                    const next = (model.screenshots || []).filter((_, j) => j !== i)
+                    set('screenshots', next)
+                  }}
+                  className='rounded bg-rose-500 px-2 py-1 text-[10px] text-white font-medium hover:bg-rose-600'
+                >✕ Remove</button>
+              </div>
+              {ss.title && (
+                <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1.5'>
+                  <span className='text-[10px] text-white font-medium truncate block'>{ss.title}</span>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Add new image button */}
+          <label className='flex aspect-video cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors bg-slate-50 dark:bg-slate-800/50'>
+            <svg className='h-6 w-6 text-slate-400' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M12 4v16m8-8H4' />
+            </svg>
+            <span className='text-[10px] font-medium text-slate-400'>Add Picture</span>
+            <input
+              type='file'
+              accept='image/*'
+              className='hidden'
+              onChange={(e) => {
+                const file = e.target.files && e.target.files[0]
+                if (!file) return
+                const reader = new FileReader()
+                reader.onload = () => {
+                  const newScreenshot = {
+                    id: uid('ss'),
+                    src: reader.result,
+                    title: file.name.replace(/\.[^.]+$/, ''),
+                    description: '',
+                    tags: [],
+                    category: 'Setup',
+                    notes: '',
+                    createdAt: Date.now(),
+                  }
+                  set('screenshots', [...(model.screenshots || []), newScreenshot])
+                }
+                reader.readAsDataURL(file)
+                // Reset input so the same file can be re-added if needed
+                e.target.value = ''
+              }}
+            />
+          </label>
+        </div>
+      </div>
     </div>
   )
 }
@@ -367,6 +430,21 @@ function ModelDetailView({ model, allTrades, onBack, onSave, onToggleFav }) {
             <h4 className='mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500'>Details</h4>
             <div className='grid grid-cols-2 gap-1 text-xs'><span className='text-slate-400'>Category:</span><span>{model.category}</span><span className='text-slate-400'>Market:</span><span>{model.market}</span><span className='text-slate-400'>Timeframe:</span><span>{model.timeframe}</span><span className='text-slate-400'>Version:</span><span>v{model.version}</span><span className='text-slate-400'>Created:</span><span>{new Date(model.createdAt).toLocaleDateString()}</span></div>
           </div>
+
+          {/* Screenshots gallery in overview */}
+          {(model.screenshots || []).length > 0 && (
+            <div className={cx(card, 'p-3')}>
+              <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Model Pictures ({model.screenshots.length})</h4>
+              <div className='grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4'>
+                {model.screenshots.map((ss) => (
+                  <div key={ss.id} className='overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700'>
+                    <img src={ss.src} alt={ss.title || 'Screenshot'} className='aspect-video w-full object-cover' />
+                    {ss.title && <div className='px-2 py-1 text-[10px] text-slate-500 truncate'>{ss.title}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
