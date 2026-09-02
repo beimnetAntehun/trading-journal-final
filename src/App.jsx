@@ -3863,7 +3863,7 @@ function TradingPlanView() {
 
 /* ============================ Settings ============================ */
 function SettingsView() {
-  const { state, setTags, setChecklist, setPrompts, setRiskPlan, setGoals, addAccount, hardReset, importJson, logout, user } = useStore()
+  const { state, setTags, setChecklist, setPrompts, setRiskPlan, setGoals, addAccount, hardReset, importJson } = useStore()
   const [acc, setAcc] = useState({ name: '', type: 'live', startingBalance: 10000 })
   const rp = state.riskPlan
   const g = state.goals
@@ -3911,17 +3911,6 @@ function SettingsView() {
           }}>Reset everything</button>
         </div>
       </Card>
-      {user && (
-        <Card title='Account'>
-          <div className='flex items-center justify-between'>
-            <div>
-              <p className='text-sm text-slate-700 dark:text-slate-300'>{user.email}</p>
-              <p className='text-xs text-slate-400'>Logged in with cloud sync</p>
-            </div>
-            <button className={btnDanger} onClick={() => { if (window.confirm('Log out? Your local data will remain.')) logout() }}>Logout</button>
-          </div>
-        </Card>
-      )}
     </div>
   )
 }
@@ -3946,7 +3935,7 @@ const NAV = [
 ]
 
 function Shell() {
-  const { state, setTheme, setActiveAccount, setPlaybookModels, user, cloudStatus } = useStore()
+  const { state, setTheme, setActiveAccount, setPlaybookModels, user, cloudStatus, logout } = useStore()
   const [view, setView] = useState('dashboard')
   const [filters, setFilters] = useState(emptyFilters)
   const [aggregate, setAggregate] = useState(false)
@@ -3955,9 +3944,19 @@ function Shell() {
   const [editing, setEditing] = useState(null)
   const [importOpen, setImportOpen] = useState(false)
   const [mobileNav, setMobileNav] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef(null)
 
   const dark = state.settings.theme === 'dark'
   useEffect(() => { document.documentElement.classList.toggle('dark', dark) }, [dark])
+
+  // Close user menu on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return
+    const handler = (e) => { if (userMenuRef.current && !userMenuRef.current.contains(e.target)) setUserMenuOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [userMenuOpen])
 
   const openNew = useCallback((q) => { setEditing(blankTrade(state.activeAccountId)); setQuick(!!q); setFormOpen(true) }, [state.activeAccountId])
   const openEdit = (t) => { setEditing(t); setQuick(false); setFormOpen(true) }
@@ -4039,7 +4038,31 @@ function Shell() {
               <button className={btnGhost} onClick={() => openNew(true)}>Quick add</button>
               <button className={btnPrimary} onClick={() => openNew(false)}>+ New</button>
               <button className={btnGhost} onClick={() => setTheme(dark ? 'light' : 'dark')} title='Toggle theme'>{dark ? '☀' : '🌙'}</button>
-              {user && <span className='text-xs text-slate-400 hidden sm:inline' title='Cloud sync active'>{cloudStatus === 'saved' ? '☁️ Synced' : cloudStatus === 'syncing' ? '🔄 Syncing...' : '☁️'}</span>}
+              {user && (
+                <div className='relative' ref={userMenuRef}>
+                  <button className='flex items-center gap-1.5 rounded-full bg-indigo-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition-colors' onClick={() => setUserMenuOpen(!userMenuOpen)} title={user.email}>
+                    <span className='h-5 w-5 flex items-center justify-center rounded-full bg-indigo-500 text-[10px] font-bold text-white'>{(user.email || '?')[0].toUpperCase()}</span>
+                    <span className='hidden sm:inline max-w-[100px] truncate'>{user.email?.split('@')[0]}</span>
+                    <svg className='h-3 w-3 opacity-60' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' /></svg>
+                  </button>
+                  {userMenuOpen && (
+                    <div className='absolute right-0 top-full mt-1 w-56 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl z-50 py-1'>
+                      <div className='px-3 py-2 border-b border-slate-100 dark:border-slate-800'>
+                        <p className='text-xs font-medium text-slate-900 dark:text-white truncate'>{user.email}</p>
+                        <p className='text-[10px] text-slate-400 mt-0.5 flex items-center gap-1'>
+                          {cloudStatus === 'saved' ? '☁️ Synced' : cloudStatus === 'syncing' ? '🔄 Syncing...' : '☁️ Cloud sync'}
+                        </p>
+                      </div>
+                      <button className='w-full text-left px-3 py-2 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2' onClick={() => { setView('settings'); setUserMenuOpen(false) }}>
+                        ⚙️ Settings
+                      </button>
+                      <button className='w-full text-left px-3 py-2 text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950 flex items-center gap-2' onClick={() => { if (window.confirm('Log out? Your local data will remain.')) { logout(); setUserMenuOpen(false) } }}>
+                        🚪 Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
