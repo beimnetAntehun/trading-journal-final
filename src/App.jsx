@@ -3,7 +3,8 @@ import React, {
   useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy,
 } from 'react'
 import { useStore, StoreProvider } from './context/StoreContext'
-import { AuthModal } from './components/AuthModal'
+import { LoginPage } from './components/LoginPage'
+import { isSupabaseReady } from './lib/supabase'
 import {
   ResponsiveContainer, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, Cell, ReferenceLine,
@@ -3862,7 +3863,7 @@ function TradingPlanView() {
 
 /* ============================ Settings ============================ */
 function SettingsView() {
-  const { state, setTags, setChecklist, setPrompts, setRiskPlan, setGoals, addAccount, hardReset, importJson } = useStore()
+  const { state, setTags, setChecklist, setPrompts, setRiskPlan, setGoals, addAccount, hardReset, importJson, logout, user } = useStore()
   const [acc, setAcc] = useState({ name: '', type: 'live', startingBalance: 10000 })
   const rp = state.riskPlan
   const g = state.goals
@@ -3910,6 +3911,17 @@ function SettingsView() {
           }}>Reset everything</button>
         </div>
       </Card>
+      {user && (
+        <Card title='Account'>
+          <div className='flex items-center justify-between'>
+            <div>
+              <p className='text-sm text-slate-700 dark:text-slate-300'>{user.email}</p>
+              <p className='text-xs text-slate-400'>Logged in with cloud sync</p>
+            </div>
+            <button className={btnDanger} onClick={() => { if (window.confirm('Log out? Your local data will remain.')) logout() }}>Logout</button>
+          </div>
+        </Card>
+      )}
     </div>
   )
 }
@@ -3942,7 +3954,6 @@ function Shell() {
   const [quick, setQuick] = useState(false)
   const [editing, setEditing] = useState(null)
   const [importOpen, setImportOpen] = useState(false)
-  const [authOpen, setAuthOpen] = useState(false)
   const [mobileNav, setMobileNav] = useState(false)
 
   const dark = state.settings.theme === 'dark'
@@ -4028,9 +4039,7 @@ function Shell() {
               <button className={btnGhost} onClick={() => openNew(true)}>Quick add</button>
               <button className={btnPrimary} onClick={() => openNew(false)}>+ New</button>
               <button className={btnGhost} onClick={() => setTheme(dark ? 'light' : 'dark')} title='Toggle theme'>{dark ? '☀' : '🌙'}</button>
-              <button className={cx(btnGhost, 'text-xs')} onClick={() => setAuthOpen(true)} title='Cloud Sync'>
-                {user ? (cloudStatus === 'saved' ? '☁️' : cloudStatus === 'syncing' ? '🔄' : '☁️') : '🔓'}
-              </button>
+              {user && <span className='text-xs text-slate-400 hidden sm:inline' title='Cloud sync active'>{cloudStatus === 'saved' ? '☁️ Synced' : cloudStatus === 'syncing' ? '🔄 Syncing...' : '☁️'}</span>}
             </div>
           </div>
 
@@ -4060,14 +4069,24 @@ function Shell() {
       </div>
 
       <TradeForm open={formOpen} quick={quick} initial={editing || blankTrade(state.activeAccountId)} onClose={() => setFormOpen(false)} />
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} onAuth={() => {}} />
       <ImportModal open={importOpen} onClose={() => setImportOpen(false)} />    </div>
   )
 }
 
 function Root() {
-  const { state } = useStore()
-  if (!state) return <div className='min-h-screen bg-slate-50 dark:bg-slate-950'><Spinner /></div>
+  const { state, user, setUser } = useStore()
+  const [offlineBypass, setOfflineBypass] = useState(false)
+
+  if (!state) return <div className='min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center'><Spinner /></div>
+
+  // If Supabase is configured and user hasn't logged in or bypassed
+  if (isSupabaseReady() && !user && !offlineBypass) {
+    return <LoginPage onAuth={(u) => {
+      if (u) setUser(u)
+      else setOfflineBypass(true)
+    }} />
+  }
+
   return <Shell />
 }
 

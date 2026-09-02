@@ -73,7 +73,7 @@ export function StoreProvider({ children }) {
   }
 
   const api = useMemo(() => ({
-    state, user, cloudStatus, login, logout,
+    state, user, cloudStatus, login, logout, setUser,
     setTheme: (theme) => update((s) => { s.settings.theme = theme; return s }),
     setActiveAccount: (id) => update((s) => { s.activeAccountId = id; return s }),
     addAccount: (a) => update((s) => { s.accounts.push({ id: 'acc_' + Math.random().toString(36).slice(2, 9), startingBalance: 0, type: 'live', ...a }); return s }),
