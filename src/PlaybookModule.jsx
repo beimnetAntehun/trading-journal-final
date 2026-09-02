@@ -221,9 +221,25 @@ function ModelsPage({ models, onOpen, onToggleFav, onStatusChange, onNavigate })
 
 /* ===================== Create / Edit Model ===================== */
 
-function CreateModelPage({ models, onSave, onBack }) {
-  const [model, setModel] = useState(() => createModel())
+function ImageLightbox({ src, alt, onClose }) {
+  if (!src) return null
+  return (
+    <div className='fixed inset-0 z-[60] flex items-center justify-center bg-black/80 no-print' onClick={onClose}>
+      <button className='absolute top-4 right-4 text-white text-2xl font-bold hover:text-slate-300 z-10' onClick={onClose}>✕</button>
+      <img
+        src={src}
+        alt={alt || 'Screenshot'}
+        className='max-h-[90vh] max-w-[90vw] rounded-lg object-contain shadow-2xl'
+        onClick={(e) => e.stopPropagation()}
+      />
+    </div>
+  )
+}
+
+function CreateModelPage({ models, onSave, onBack, editModel }) {
+  const [model, setModel] = useState(() => editModel ? { ...editModel } : createModel())
   const [saved, setSaved] = useState(false)
+  const [lightbox, setLightbox] = useState(null) // { src, alt }
 
   const set = (k, v) => setModel((p) => ({ ...p, [k]: v }))
 
@@ -236,10 +252,11 @@ function CreateModelPage({ models, onSave, onBack }) {
   return (
     <div className='space-y-4'>
       <div className='flex items-center justify-between'>
-        <h3 className='text-sm font-semibold text-slate-500 dark:text-slate-400'>Create New Trading Model</h3>
+        <h3 className='text-sm font-semibold text-slate-500 dark:text-slate-400'>{editModel ? 'Edit Trading Model' : 'Create New Trading Model'}</h3>
         <div className='flex items-center gap-2'>
           {saved && <span className='text-xs text-emerald-500'>✓ Saved</span>}
-          <button className={btnPrimary} onClick={handleSave}>Save Model</button>
+          <button className={btnGhost} onClick={onBack}>Cancel</button>
+          <button className={btnPrimary} onClick={handleSave}>{editModel ? 'Update Model' : 'Save Model'}</button>
         </div>
       </div>
 
@@ -320,12 +337,13 @@ function CreateModelPage({ models, onSave, onBack }) {
         <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
           {/* Existing images */}
           {(model.screenshots || []).map((ss, i) => (
-            <div key={ss.id} className='group relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700'>
+            <div key={ss.id} className='group relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer' onClick={() => setLightbox({ src: ss.src, alt: ss.title })}>
               <img src={ss.src} alt={ss.title || 'Screenshot'} className='aspect-video w-full object-cover' />
               <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1'>
                 <button
                   type='button'
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     const next = (model.screenshots || []).filter((_, j) => j !== i)
                     set('screenshots', next)
                   }}
@@ -375,21 +393,26 @@ function CreateModelPage({ models, onSave, onBack }) {
           </label>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightbox && <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />}
     </div>
   )
 }
 
 /* ===================== Model Detail View ===================== */
 
-function ModelDetailView({ model, allTrades, onBack, onSave, onToggleFav }) {
+function ModelDetailView({ model, allTrades, onBack, onSave, onToggleFav, onEdit }) {
   const [tab, setTab] = useState('overview')
   const [editNotes, setEditNotes] = useState(model.notes || '')
+  const [lightbox, setLightbox] = useState(null)
   const linkedTrades = allTrades.filter((t) => t.modelId === model.id)
   const closed = linkedTrades.filter(isClosed)
   const s = useMemo(() => stats(closed), [closed])
 
   const tabs = [
     ['overview', 'Overview', '📊'],
+    ['edit', 'Edit', '✏️'],
     ['entries', 'Entry Rules', '📥'],
     ['exits', 'Exit Rules', '📤'],
     ['risk', 'Risk Rules', '🛡️'],
@@ -437,7 +460,7 @@ function ModelDetailView({ model, allTrades, onBack, onSave, onToggleFav }) {
               <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Model Pictures ({model.screenshots.length})</h4>
               <div className='grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4'>
                 {model.screenshots.map((ss) => (
-                  <div key={ss.id} className='overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700'>
+                  <div key={ss.id} className='overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:ring-2 hover:ring-indigo-400 transition-all' onClick={() => setLightbox({ src: ss.src, alt: ss.title })}>
                     <img src={ss.src} alt={ss.title || 'Screenshot'} className='aspect-video w-full object-cover' />
                     {ss.title && <div className='px-2 py-1 text-[10px] text-slate-500 truncate'>{ss.title}</div>}
                   </div>
@@ -523,6 +546,142 @@ function ModelDetailView({ model, allTrades, onBack, onSave, onToggleFav }) {
             onBlur={() => onSave({ ...model, notes: editNotes })} placeholder='Add notes about this model...' />
         </div>
       )}
+
+      {tab === 'edit' && (
+        <EditModelSection model={model} onSave={onSave} />
+      )}
+
+      {/* Lightbox */}
+      {lightbox && <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />}
+    </div>
+  )
+}
+
+/* ===================== Edit Model Section (inline in detail view) ===================== */
+
+function EditModelSection({ model, onSave }) {
+  const [m, setM] = useState({ ...model })
+  const [saved, setSaved] = useState(false)
+  const [lightbox, setLightbox] = useState(null)
+
+  const set = (k, v) => setM((p) => ({ ...p, [k]: v }))
+
+  const handleSave = () => {
+    onSave({ ...m, updatedAt: Date.now() })
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  return (
+    <div className='space-y-4'>
+      <div className='flex items-center justify-between'>
+        <h4 className='text-sm font-semibold text-slate-500 dark:text-slate-400'>Edit Model</h4>
+        <div className='flex items-center gap-2'>
+          {saved && <span className='text-xs text-emerald-500'>✓ Saved</span>}
+          <button className={btnPrimary} onClick={handleSave}>Save Changes</button>
+        </div>
+      </div>
+
+      {/* Basic Info */}
+      <div className={cx(card, 'p-3')}>
+        <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Basic Information</h4>
+        <div className='grid gap-3 md:grid-cols-2 xl:grid-cols-4'>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Model Name</span><input className={inputCls} value={m.name} onChange={(e) => set('name', e.target.value)} /></label>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Category</span><select className={inputCls} value={m.category} onChange={(e) => set('category', e.target.value)}>{MODEL_CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select></label>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Market</span><select className={inputCls} value={m.market} onChange={(e) => set('market', e.target.value)}>{MODEL_MARKETS.map((ma) => <option key={ma}>{ma}</option>)}</select></label>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Status</span><select className={inputCls} value={m.status} onChange={(e) => set('status', e.target.value)}>{MODEL_STATUSES.map((s) => <option key={s}>{s}</option>)}</select></label>
+          <label className='block md:col-span-2'><span className='mb-1 block text-xs text-slate-400'>Timeframe(s)</span><input className={inputCls} value={m.timeframe} onChange={(e) => set('timeframe', e.target.value)} /></label>
+          <label className='block md:col-span-2'><span className='mb-1 block text-xs text-slate-400'>Description</span><textarea className={inputCls} rows={2} value={m.description} onChange={(e) => set('description', e.target.value)} /></label>
+        </div>
+      </div>
+
+      {/* Market Conditions */}
+      <div className={cx(card, 'p-3')}>
+        <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Market Conditions</h4>
+        <div className='grid gap-3 md:grid-cols-3'>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Trend</span><input className={inputCls} value={m.marketConditions?.trend ?? ''} onChange={(e) => set('marketConditions', { ...m.marketConditions, trend: e.target.value })} /></label>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Volatility</span><input className={inputCls} value={m.marketConditions?.volatility ?? ''} onChange={(e) => set('marketConditions', { ...m.marketConditions, volatility: e.target.value })} /></label>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Session</span><input className={inputCls} value={m.marketConditions?.session ?? ''} onChange={(e) => set('marketConditions', { ...m.marketConditions, session: e.target.value })} /></label>
+        </div>
+      </div>
+
+      {/* Entry Rules */}
+      <div className={cx(card, 'p-3')}>
+        <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Entry Rules</h4>
+        <div className='space-y-1.5'>
+          {(m.entryRules || []).map((r, i) => (
+            <div key={r.id} className='flex items-center gap-2'>
+              <span className='text-xs text-slate-400 w-5'>#{i + 1}</span>
+              <input className={inputCls} value={r.rule} onChange={(e) => { const next = [...m.entryRules]; next[i] = { ...r, rule: e.target.value }; set('entryRules', next) }} />
+              <button className={btnDanger} onClick={() => set('entryRules', m.entryRules.filter((_, j) => j !== i))}>✕</button>
+            </div>
+          ))}
+          <button className={btnGhost} onClick={() => set('entryRules', [...(m.entryRules || []), { id: uid('er'), rule: '', type: 'entry' }])}>+ Add Rule</button>
+        </div>
+      </div>
+
+      {/* Exit Rules */}
+      <div className={cx(card, 'p-3')}>
+        <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Exit Rules</h4>
+        <div className='space-y-1.5'>
+          {(m.exitRules || []).map((r, i) => (
+            <div key={r.id} className='flex items-center gap-2'>
+              <span className='text-xs text-slate-400 w-5'>#{i + 1}</span>
+              <input className={inputCls} value={r.rule} onChange={(e) => { const next = [...m.exitRules]; next[i] = { ...r, rule: e.target.value }; set('exitRules', next) }} />
+              <button className={btnDanger} onClick={() => set('exitRules', m.exitRules.filter((_, j) => j !== i))}>✕</button>
+            </div>
+          ))}
+          <button className={btnGhost} onClick={() => set('exitRules', [...(m.exitRules || []), { id: uid('xr'), rule: '', type: 'exit' }])}>+ Add Rule</button>
+        </div>
+      </div>
+
+      {/* Risk Rules */}
+      <div className={cx(card, 'p-3')}>
+        <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Risk Rules</h4>
+        <div className='grid gap-3 grid-cols-2 md:grid-cols-4'>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Max Risk %</span><input type='number' className={inputCls} value={m.riskRules?.maxRiskPct ?? ''} onChange={(e) => set('riskRules', { ...m.riskRules, maxRiskPct: Number(e.target.value) })} /></label>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Min R:R</span><input type='number' step='any' className={inputCls} value={m.riskRules?.minRR ?? ''} onChange={(e) => set('riskRules', { ...m.riskRules, minRR: Number(e.target.value) })} /></label>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Max Trades/Day</span><input type='number' className={inputCls} value={m.riskRules?.maxDailyTrades ?? ''} onChange={(e) => set('riskRules', { ...m.riskRules, maxDailyTrades: Number(e.target.value) })} /></label>
+          <label className='block'><span className='mb-1 block text-xs text-slate-400'>Max Spread</span><input className={inputCls} value={m.riskRules?.maxSpread ?? ''} onChange={(e) => set('riskRules', { ...m.riskRules, maxSpread: e.target.value })} /></label>
+        </div>
+      </div>
+
+      {/* Screenshots Gallery (edit mode) */}
+      <div className={cx(card, 'p-3')}>
+        <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Model Pictures / Screenshots</h4>
+        <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
+          {(m.screenshots || []).map((ss, i) => (
+            <div key={ss.id} className='group relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer' onClick={() => setLightbox({ src: ss.src, alt: ss.title })}>
+              <img src={ss.src} alt={ss.title || 'Screenshot'} className='aspect-video w-full object-cover' />
+              <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center'>
+                <button
+                  type='button'
+                  onClick={(e) => { e.stopPropagation(); set('screenshots', m.screenshots.filter((_, j) => j !== i)) }}
+                  className='rounded bg-rose-500 px-2 py-1 text-[10px] text-white font-medium hover:bg-rose-600'
+                >✕ Remove</button>
+              </div>
+            </div>
+          ))}
+          <label className='flex aspect-video cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-indigo-400 transition-colors bg-slate-50 dark:bg-slate-800/50'>
+            <svg className='h-6 w-6 text-slate-400' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M12 4v16m8-8H4' /></svg>
+            <span className='text-[10px] font-medium text-slate-400'>Add Picture</span>
+            <input type='file' accept='image/*' className='hidden' onChange={(e) => {
+              const file = e.target.files && e.target.files[0]; if (!file) return
+              const reader = new FileReader()
+              reader.onload = () => { set('screenshots', [...(m.screenshots || []), { id: uid('ss'), src: reader.result, title: file.name.replace(/\.[^.]+$/, ''), description: '', tags: [], category: 'Setup', notes: '', createdAt: Date.now() }]) }
+              reader.readAsDataURL(file); e.target.value = ''
+            }} />
+          </label>
+        </div>
+      </div>
+
+      {/* Notes */}
+      <div className={cx(card, 'p-3')}>
+        <h4 className='mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500'>Notes</h4>
+        <textarea className={inputCls} rows={3} value={m.notes} onChange={(e) => set('notes', e.target.value)} />
+      </div>
+
+      {lightbox && <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />}
     </div>
   )
 }
@@ -648,6 +807,14 @@ export default function PlaybookModule({ allTrades, models: externalModels, onMo
       {subView === 'overview' && <OverviewPage models={models} allTrades={allTrades} onNavigate={setSubView} />}
       {subView === 'models' && <ModelsPage models={models} onOpen={handleOpenModel} onToggleFav={handleToggleFav} onNavigate={setSubView} />}
       {subView === 'create' && <CreateModelPage models={models} onSave={handleSaveModel} onBack={() => setSubView('models')} />}
+      {subView === 'edit' && selectedModel && (
+        <CreateModelPage models={models} editModel={selectedModel} onSave={(updated) => {
+          const next = models.map((m) => m.id === updated.id ? updated : m)
+          saveModels(next)
+          setSelectedModel(updated)
+          setSubView('detail')
+        }} onBack={() => setSubView('detail')} />
+      )}
       {subView === 'detail' && selectedModel && (
         <ModelDetailView model={selectedModel} allTrades={allTrades} onBack={() => { setSubView('models'); setSelectedModel(null) }}
           onSave={(updated) => {
@@ -655,7 +822,8 @@ export default function PlaybookModule({ allTrades, models: externalModels, onMo
             saveModels(next)
             setSelectedModel(updated)
           }}
-          onToggleFav={handleToggleFav} />
+          onToggleFav={handleToggleFav}
+          onEdit={() => setSubView('edit')} />
       )}
       {subView === 'stats' && <StatsPage models={models} />}
       {subView === 'version' && <VersionPage models={models} />}
