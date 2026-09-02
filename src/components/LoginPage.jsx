@@ -27,7 +27,13 @@ export function LoginPage({ onAuth }) {
           }
           throw error
         }
-        setSuccess('Check your email for the confirmation link!')
+        // Auto-login after signup (works when email confirmation is off)
+        if (data?.session) {
+          onAuth(data.user)
+        } else {
+          setSuccess('Account created! You can now login.')
+          setMode('login')
+        }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) {
