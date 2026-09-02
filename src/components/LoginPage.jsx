@@ -21,11 +21,21 @@ export function LoginPage({ onAuth }) {
     try {
       if (mode === 'signup') {
         const { data, error } = await supabase.auth.signUp({ email, password })
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('already registered') || error.message.includes('already exists')) {
+            throw new Error('This email is already registered. Please login instead.')
+          }
+          throw error
+        }
         setSuccess('Check your email for the confirmation link!')
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('Invalid login')) {
+            throw new Error('Invalid email or password. Please try again.')
+          }
+          throw error
+        }
         if (data?.user) onAuth(data.user)
       }
     } catch (e) { setError(e.message) }
