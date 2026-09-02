@@ -41,7 +41,7 @@ body {
   }
 }
 
-/* ── Login page trading background ── */
+/* ── Login page trading workstation background ── */
 .login-page {
   position: relative;
   min-height: 100vh;
@@ -52,7 +52,7 @@ body {
   background-repeat: no-repeat;
 }
 
-/* Subtle blur on the chart background */
+/* Subtle blur on the background for depth */
 .login-page::before {
   content: "";
   position: absolute;
@@ -60,20 +60,20 @@ body {
   background: inherit;
   background-size: cover;
   background-position: center;
-  filter: blur(2px) brightness(0.45);
-  transform: scale(1.05);
+  filter: blur(1px) brightness(0.6);
+  transform: scale(1.03);
   z-index: 0;
 }
 
-/* Dark overlay */
+/* Dark overlay for card readability */
 .login-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(5, 8, 16, 0.82) 0%,
-    rgba(8, 13, 22, 0.75) 40%,
-    rgba(11, 15, 20, 0.8) 100%
+    rgba(5, 8, 16, 0.65) 0%,
+    rgba(8, 13, 22, 0.55) 40%,
+    rgba(11, 15, 20, 0.6) 100%
   );
   z-index: 1;
 }
@@ -84,7 +84,61 @@ body {
   z-index: 2;
 }
 
-/* Light mode: hide the chart background, use clean light gradient */
+/* Glassmorphism card for login form */
+.login-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(99, 102, 241, 0.05),
+    0 25px 60px -12px rgba(0, 0, 0, 0.5),
+    0 4px 24px -4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Trust badges */
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.06);
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+.trust-badge svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Tab switcher glassmorphism */
+.login-tabs {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(148, 163, 184, 0.06);
+}
+.login-tabs button.active {
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+.login-tabs button:not(.active) {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid transparent;
+}
+.login-tabs button:not(.active):hover {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.05);
+}
+
+/* Light mode overrides */
 :root[data-theme="light"] .login-page,
 :root:not([data-theme="dark"]) .login-page {
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
@@ -98,4 +152,12 @@ body {
 :root[data-theme="light"] .login-overlay,
 :root:not([data-theme="dark"]) .login-overlay {
   background: transparent;
+}
+
+:root[data-theme="light"] .login-card,
+:root:not([data-theme="dark"]) .login-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.1);
 }
