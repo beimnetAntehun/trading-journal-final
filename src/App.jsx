@@ -3756,7 +3756,7 @@ function TradingPlanView() {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div>
-          <h2 className='text-lg font-bold'>📜 BT's Trading Plan</h2>
+          <h2 className='text-lg font-bold'>📜 My Trading Plan</h2>
           <p className='text-xs text-slate-400 mt-0.5'>Tap any field to edit. Your plan is saved automatically.</p>
         </div>
         {saved && <span className='text-xs text-emerald-500 font-medium'>✓ Saved</span>}
@@ -3778,7 +3778,7 @@ function TradingPlanView() {
             ) : (
               <h1 className='text-2xl font-bold cursor-pointer hover:text-indigo-500 transition-colors'
                 onClick={() => startEdit('name', plan.name)}>
-                {plan.name || 'BT'} <span className='text-sm font-normal text-slate-400'>✎</span>
+                {plan.name || ''} <span className='text-sm font-normal text-slate-400'>✎</span>
               </h1>
             )}
             {editing === 'why' ? (
