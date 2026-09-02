@@ -28,7 +28,7 @@ const SpinnerPlaceholder = () => <div className='flex items-center justify-cente
 const cx = (...a) => a.filter(Boolean).join(' ')
 const card = 'rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900'
 const inputCls =
-  'w-full rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500'
+  'w-full rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-slate-400 dark:placeholder:text-slate-500'
 const btn = 'inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40'
 const btnPrimary = cx(btn, 'bg-indigo-600 text-white hover:bg-indigo-500')
 const btnGhost = cx(btn, 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800')

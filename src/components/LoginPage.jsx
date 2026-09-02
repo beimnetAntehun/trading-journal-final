@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 const cx = (...a) => a.filter(Boolean).join(' ')
-const inputCls = 'w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all'
+const inputCls = 'w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500'
 const btnPrimary = 'w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors disabled:opacity-40'
 
 export function LoginPage({ onAuth }) {
