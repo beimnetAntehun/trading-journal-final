@@ -27,8 +27,8 @@ export function LoginPage({ onAuth }) {
           }
           throw error
         }
-        // Auto-login after signup (works when email confirmation is off)
-        if (data?.session) {
+        // Account created — go to dashboard
+        if (data?.user) {
           onAuth(data.user)
         } else {
           setSuccess('Account created! You can now login.')
