@@ -54,7 +54,7 @@ function readAll() {
       }
       // Reset old default trading plan so users start fresh
       const tp = parsed.tradingPlan || {}
-      if (tp.sessions === 'New York' && tp.pairs === 'UJ' && tp.docMethod === 'Notion') {
+      if (tp.sessions === 'New York' || tp.pairs === 'UJ' || tp.docMethod === 'Notion' || tp.notes === "Plan your trade, trade your plan. Don't be emotional. Risk what you afford. It's about staying in the game.") {
         parsed.tradingPlan = seed().tradingPlan
       }
       cache = { ...seed(), ...parsed, tags: { ...seed().tags, ...(parsed.tags || {}) } }
