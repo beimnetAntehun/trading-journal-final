@@ -27,13 +27,8 @@ export function LoginPage({ onAuth }) {
           }
           throw error
         }
-        // Account created — go to dashboard
-        if (data?.user) {
-          onAuth(data.user)
-        } else {
-          setSuccess('Account created! You can now login.')
-          setMode('login')
-        }
+        setSuccess('Account created! You can now login.')
+        setMode('login')
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) {
