@@ -3781,21 +3781,6 @@ function TradingPlanView() {
                 {plan.name || ''} <span className='text-sm font-normal text-slate-400'>✎</span>
               </h1>
             )}
-            {editing === 'why' ? (
-              <div className='space-y-2 mt-3'>
-                <textarea className={cx(inputCls, 'min-h-[80px]')} value={draft} onChange={(e) => setDraft(e.target.value)}
-                  placeholder='Why do you trade?' autoFocus />
-                <div className='flex gap-2'>
-                  <button className={btnPrimary} onClick={() => saveField('why')}>Save</button>
-                  <button className={btnGhost} onClick={cancelEdit}>Cancel</button>
-                </div>
-              </div>
-            ) : (
-              <p className='mt-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer hover:text-indigo-500 transition-colors'
-                onClick={() => startEdit('why', plan.why)}>
-                {plan.why || 'Click to add your why...'} <span className='text-xs text-slate-400'>✎</span>
-              </p>
-            )}
           </div>
           <div className='shrink-0 text-4xl opacity-30 select-none'>📜</div>
         </div>
