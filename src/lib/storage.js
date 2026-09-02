@@ -52,10 +52,10 @@ function readAll() {
       if (isOldDefault && Object.keys(goals).length <= 8) {
         parsed.goals = seed().goals
       }
-      // Reset old default trading plan so users start fresh
-      const tp = parsed.tradingPlan || {}
-      if (tp.sessions === 'New York' || tp.pairs === 'UJ' || tp.docMethod === 'Notion' || tp.notes === "Plan your trade, trade your plan. Don't be emotional. Risk what you afford. It's about staying in the game.") {
+      // One-time reset: clear old default trading plan (version 2)
+      if (!parsed.dataVersion || parsed.dataVersion < 2) {
         parsed.tradingPlan = seed().tradingPlan
+        parsed.dataVersion = 2
       }
       cache = { ...seed(), ...parsed, tags: { ...seed().tags, ...(parsed.tags || {}) } }
     } else {
