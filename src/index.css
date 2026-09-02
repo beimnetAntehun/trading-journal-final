@@ -40,3 +40,62 @@ body {
     display: block !important;
   }
 }
+
+/* ── Login page trading background ── */
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: #080D16;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Subtle blur on the chart background */
+.login-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  background-size: cover;
+  background-position: center;
+  filter: blur(2px) brightness(0.45);
+  transform: scale(1.05);
+  z-index: 0;
+}
+
+/* Dark overlay */
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(5, 8, 16, 0.82) 0%,
+    rgba(8, 13, 22, 0.75) 40%,
+    rgba(11, 15, 20, 0.8) 100%
+  );
+  z-index: 1;
+}
+
+/* Content layer */
+.login-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Light mode: hide the chart background, use clean light gradient */
+:root[data-theme="light"] .login-page,
+:root:not([data-theme="dark"]) .login-page {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+}
+
+:root[data-theme="light"] .login-page::before,
+:root:not([data-theme="dark"]) .login-page::before {
+  display: none;
+}
+
+:root[data-theme="light"] .login-overlay,
+:root:not([data-theme="dark"]) .login-overlay {
+  background: transparent;
+}
