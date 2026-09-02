@@ -52,10 +52,10 @@ function readAll() {
       if (isOldDefault && Object.keys(goals).length <= 8) {
         parsed.goals = seed().goals
       }
-      // One-time reset: clear old default trading plan (version 2)
-      if (!parsed.dataVersion || parsed.dataVersion < 2) {
+      // One-time reset: clear old default trading plan (version 3)
+      if (!parsed.dataVersion || parsed.dataVersion < 3) {
         parsed.tradingPlan = seed().tradingPlan
-        parsed.dataVersion = 2
+        parsed.dataVersion = 3
       }
       cache = { ...seed(), ...parsed, tags: { ...seed().tags, ...(parsed.tags || {}) } }
     } else {
