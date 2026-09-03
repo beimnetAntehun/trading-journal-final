@@ -38,6 +38,11 @@ export function StoreProvider({ children }) {
       if (cloudData) {
         setState({ ...cloudData, settings: { ...cloudData.settings, theme: state?.settings?.theme || cloudData.settings?.theme } })
         db.save(cloudData)
+      } else {
+        // No cloud data for this user — they're new. Reset to empty so we
+        // don't show stale localStorage from a different user.
+        const fresh = db.reset()
+        setState(fresh)
       }
       setCloudStatus('saved')
     })
@@ -68,6 +73,9 @@ export function StoreProvider({ children }) {
 
   const logout = async () => {
     if (isSupabaseReady()) await supabase.auth.signOut()
+    // Clear localStorage so the next user on this browser starts fresh
+    const fresh = db.reset()
+    setState(fresh)
     setUser(null)
     setCloudStatus('offline')
   }
