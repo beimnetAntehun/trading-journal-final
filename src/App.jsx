@@ -3140,10 +3140,7 @@ function GoalCenterView({ trades }) {
   const dismissNotif = (key) => setDismissedNotifs((prev) => new Set([...prev, key]))
 
   const closed = trades.filter(isClosed)
-
-  if (!closed.length) {
-    return <Empty icon='🏆' title='No trades yet' hint='Add at least one trade to start tracking your goals and progress.' />
-  }
+  const hasTrades = closed.length > 0
 
   const overallProgress = goalProgress.length
     ? Math.round(goalProgress.filter((g) => g.achieved).length / goalProgress.length * 100)
@@ -3151,8 +3148,19 @@ function GoalCenterView({ trades }) {
 
   return (
     <div className='space-y-4'>
+      {/* No trades banner */}
+      {!hasTrades && (
+        <div className={cx(card, 'flex items-center gap-3 p-4')}>
+          <span className='text-2xl'>📋</span>
+          <div>
+            <p className='text-sm font-medium'>Add trades to start tracking goals</p>
+            <p className='text-xs text-slate-400'>Your goal targets are shown below. Progress will appear once you log trades.</p>
+          </div>
+        </div>
+      )}
+
       {/* Achievement toasts */}
-      {newAchievements.length > 0 && (
+      {hasTrades && newAchievements.length > 0 && (
         <div className='space-y-2'>
           {newAchievements.map((g) => (
             <div key={g.key}
@@ -3169,12 +3177,14 @@ function GoalCenterView({ trades }) {
       )}
 
       {/* Overall completion ring */}
-      <div className={cx(card, 'flex flex-col items-center p-6')}>
-        <ProgressRing pct={overallProgress} size={140} strokeWidth={12}
-          label={`${goalProgress.filter((g) => g.achieved).length}/${goalProgress.length} goals met`}
-          sub={`${overallProgress}% complete`} />
-        <p className='mt-2 text-xs text-slate-400'>Edit targets in Settings</p>
-      </div>
+      {hasTrades && (
+        <div className={cx(card, 'flex flex-col items-center p-6')}>
+          <ProgressRing pct={overallProgress} size={140} strokeWidth={12}
+            label={`${goalProgress.filter((g) => g.achieved).length}/${goalProgress.length} goals met`}
+            sub={`${overallProgress}% complete`} />
+          <p className='mt-2 text-xs text-slate-400'>Edit targets in Settings</p>
+        </div>
+      )}
 
       {/* Goal cards grid */}
       <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
@@ -3206,20 +3216,27 @@ function GoalCenterView({ trades }) {
               {/* Progress bar */}
               <div className='mt-2 space-y-1'>
                 <div className='flex justify-between text-xs'>
-                  <span className='tabular-nums'>{displayCurrent}</span>
+                  <span className='tabular-nums'>{hasTrades ? displayCurrent : '—'}</span>
                   <span className='text-slate-400 tabular-nums'>{displayGoal}</span>
                 </div>
-                <div className='h-2.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700'>
-                  <div className={cx('h-full rounded-full transition-all duration-500',
-                    g.achieved ? 'bg-emerald-500' : g.progress >= 80 ? 'bg-amber-500' : 'bg-indigo-500')}
-                    style={{ width: Math.min(g.progress, 100) + '%' }} />
-                </div>
-                <div className='flex justify-between text-[10px]'>
-                  <span className={g.achieved ? 'text-emerald-500 font-medium' : 'text-slate-400'}>
-                    {g.achieved ? 'Achieved' : Math.round(g.progress) + '%'}
-                  </span>
-                  <span className='text-slate-400'>{g.unit ? g.unit + ' target' : 'target'}</span>
-                </div>
+                {hasTrades && (
+                  <>
+                    <div className='h-2.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700'>
+                      <div className={cx('h-full rounded-full transition-all duration-500',
+                        g.achieved ? 'bg-emerald-500' : g.progress >= 80 ? 'bg-amber-500' : 'bg-indigo-500')}
+                        style={{ width: Math.min(g.progress, 100) + '%' }} />
+                    </div>
+                    <div className='flex justify-between text-[10px]'>
+                      <span className={g.achieved ? 'text-emerald-500 font-medium' : 'text-slate-400'}>
+                        {g.achieved ? 'Achieved' : Math.round(g.progress) + '%'}
+                      </span>
+                      <span className='text-slate-400'>{g.unit ? g.unit + ' target' : 'target'}</span>
+                    </div>
+                  </>
+                )}
+                {!hasTrades && (
+                  <p className='text-[10px] text-slate-400'>Waiting for trades</p>
+                )}
               </div>
 
             </div>
