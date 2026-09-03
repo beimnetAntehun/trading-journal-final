@@ -83,19 +83,16 @@ body {
 }
 
 /* Light mode: hide image, use clean gradient */
-:root[data-theme="light"] .login-page,
-:root:not([data-theme="dark"]) .login-page {
+:root[data-theme="light"] .login-page {
   background-image: none;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
 }
 
-:root[data-theme="light"] .login-overlay,
-:root:not([data-theme="dark"]) .login-overlay {
+:root[data-theme="light"] .login-overlay {
   display: none;
 }
 
-:root[data-theme="light"] .login-card,
-:root:not([data-theme="dark"]) .login-card {
+:root[data-theme="light"] .login-card {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(226, 232, 240, 0.8);
