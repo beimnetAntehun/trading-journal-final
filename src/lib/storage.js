@@ -32,6 +32,7 @@ const seed = () => ({
   ],
   riskPlan: { riskPerTradePct: 1, dailyLossLimit: 300, weeklyLossLimit: 900 },
   goals: { monthlyPnlTarget: 0, monthlyRTarget: 0, maxDrawdownTarget: 0, minWinRate: 0, maxTradesPerDay: 0, maxDailyLoss: 0, targetProfitFactor: 0, achieved: {} },
+  customGoals: [],
   tradingPlan: { name: '', why: '', confluences: '', sessions: '', tradesPerDay: 0, pairs: '', htf: '', entryTf: '', riskPerTrade: 0, lotSize: 0, rrTarget: '', exitReasons: '', expectedWin: 0, expectedLoss: 0, docMethod: '', weeklyTarget: 0, monthlyTarget: 0, accountSize: 0, targetAccount: 0, habits: '', notes: '' },
   playbookModels: [],
   settings: { theme: 'dark' },

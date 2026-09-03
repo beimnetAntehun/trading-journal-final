@@ -3089,7 +3089,7 @@ function computeGoalProgress(trades, goals) {
     maxDailyLoss: todayPnl,
   }
 
-  return GOAL_DEFS.map((def) => {
+  const builtIn = GOAL_DEFS.map((def) => {
     const goalValue = goals[def.key]
     const current = values[def.key]
     const achieved = current != null && goalValue > 0 &&
@@ -3101,6 +3101,23 @@ function computeGoalProgress(trades, goals) {
       : 0
     return { ...def, goalValue, current, achieved, progress }
   })
+
+  // Custom goals — no auto-computed current value
+  const custom = (goals.customGoals || []).map((cg) => ({
+    key: cg.id,
+    label: cg.label,
+    icon: '⭐',
+    format: 'number',
+    unit: '',
+    higherIsBetter: true,
+    desc: 'Custom goal',
+    goalValue: cg.value || 0,
+    current: null,
+    achieved: false,
+    progress: 0,
+  }))
+
+  return [...builtIn, ...custom]
 }
 
 function GoalCenterView({ trades }) {
@@ -3121,8 +3138,9 @@ function GoalCenterView({ trades }) {
   const dismissNotif = (key) => setDismissedNotifs((prev) => new Set([...prev, key]))
 
   const closed = trades.filter(isClosed)
+  const hasCustomGoals = (goals.customGoals || []).length > 0
 
-  if (!closed.length && !Object.values(goals).some((v) => v > 0 && v !== true && typeof v === 'number')) {
+  if (!closed.length && !hasCustomGoals && !Object.values(goals).some((v) => v > 0 && v !== true && typeof v === 'number')) {
     return <Empty icon='🏆' title='Set your trading goals' hint='Define targets for P&L, win rate, drawdown, and more. Track your progress with visual milestones.' />
   }
 
@@ -3813,7 +3831,42 @@ function SettingsView() {
   const { state, setTags, setChecklist, setPrompts, setRiskPlan, setGoals, addAccount, hardReset, importJson } = useStore()
   const [acc, setAcc] = useState({ name: '', type: 'live', startingBalance: 10000 })
   const rp = state.riskPlan
-  const g = state.goals
+  // Goals draft state — edits are local until Save is clicked
+  const [goalsDraft, setGoalsDraft] = useState(() => ({
+    monthlyPnlTarget: state.goals.monthlyPnlTarget || 0,
+    monthlyRTarget: state.goals.monthlyRTarget || 0,
+    maxDrawdownTarget: state.goals.maxDrawdownTarget || 0,
+    minWinRate: state.goals.minWinRate || 0,
+    maxTradesPerDay: state.goals.maxTradesPerDay || 0,
+    maxDailyLoss: state.goals.maxDailyLoss || 0,
+    targetProfitFactor: state.goals.targetProfitFactor || 0,
+  }))
+  const [customGoalsDraft, setCustomGoalsDraft] = useState(() => state.customGoals || [])
+  const [newGoalLabel, setNewGoalLabel] = useState('')
+  const [newGoalValue, setNewGoalValue] = useState('')
+  const [goalsSaved, setGoalsSaved] = useState(false)
+
+  const saveGoals = () => {
+    setGoals({ ...goalsDraft, customGoals: customGoalsDraft })
+    setGoalsSaved(true)
+    setTimeout(() => setGoalsSaved(false), 2000)
+  }
+
+  const updateCustomGoal = (id, field, value) => {
+    setCustomGoalsDraft((prev) => prev.map((g) => g.id === id ? { ...g, [field]: value } : g))
+  }
+
+  const removeCustomGoal = (id) => {
+    setCustomGoalsDraft((prev) => prev.filter((g) => g.id !== id))
+  }
+
+  const addCustomGoal = () => {
+    if (!newGoalLabel.trim()) return
+    setCustomGoalsDraft((prev) => [...prev, { id: 'cg_' + Math.random().toString(36).slice(2, 9), label: newGoalLabel.trim(), value: Number(newGoalValue) || 0 }])
+    setNewGoalLabel('')
+    setNewGoalValue('')
+  }
+
   return (
     <div className='grid gap-4 lg:grid-cols-2'>
       <Card title='Strategy tags'><ListEditor label='strategy' items={state.tags.strategies} onChange={(a) => setTags('strategies', a)} /></Card>
@@ -3830,13 +3883,48 @@ function SettingsView() {
       </Card>
       <Card title='Goals'>
         <div className='grid grid-cols-2 gap-2'>
-          <Field label='Monthly P&L target'><input type='number' className={inputCls} value={g.monthlyPnlTarget} onChange={(e) => setGoals({ monthlyPnlTarget: Number(e.target.value) })} /></Field>
-          <Field label='Monthly R target'><input type='number' step='any' className={inputCls} value={g.monthlyRTarget} onChange={(e) => setGoals({ monthlyRTarget: Number(e.target.value) })} /></Field>
-          <Field label='Max drawdown %'><input type='number' step='any' className={inputCls} value={g.maxDrawdownTarget} onChange={(e) => setGoals({ maxDrawdownTarget: Number(e.target.value) })} /></Field>
-          <Field label='Min win rate %'><input type='number' className={inputCls} value={g.minWinRate} onChange={(e) => setGoals({ minWinRate: Number(e.target.value) })} /></Field>
-          <Field label='Max trades/day'><input type='number' className={inputCls} value={g.maxTradesPerDay} onChange={(e) => setGoals({ maxTradesPerDay: Number(e.target.value) })} /></Field>
-          <Field label='Max daily loss'><input type='number' className={inputCls} value={g.maxDailyLoss} onChange={(e) => setGoals({ maxDailyLoss: Number(e.target.value) })} /></Field>
-          <Field label='Target profit factor'><input type='number' step='any' className={inputCls} value={g.targetProfitFactor} onChange={(e) => setGoals({ targetProfitFactor: Number(e.target.value) })} /></Field>
+          <Field label='Monthly P&L target'><input type='number' className={inputCls} placeholder='0' value={goalsDraft.monthlyPnlTarget || ''} onChange={(e) => setGoalsDraft((p) => ({ ...p, monthlyPnlTarget: Number(e.target.value) }))} /></Field>
+          <Field label='Monthly R target'><input type='number' step='any' className={inputCls} placeholder='0' value={goalsDraft.monthlyRTarget || ''} onChange={(e) => setGoalsDraft((p) => ({ ...p, monthlyRTarget: Number(e.target.value) }))} /></Field>
+          <Field label='Max drawdown %'><input type='number' step='any' className={inputCls} placeholder='0' value={goalsDraft.maxDrawdownTarget || ''} onChange={(e) => setGoalsDraft((p) => ({ ...p, maxDrawdownTarget: Number(e.target.value) }))} /></Field>
+          <Field label='Min win rate %'><input type='number' step='any' className={inputCls} placeholder='0' value={goalsDraft.minWinRate || ''} onChange={(e) => setGoalsDraft((p) => ({ ...p, minWinRate: Number(e.target.value) }))} /></Field>
+          <Field label='Max trades/day'><input type='number' className={inputCls} placeholder='0' value={goalsDraft.maxTradesPerDay || ''} onChange={(e) => setGoalsDraft((p) => ({ ...p, maxTradesPerDay: Number(e.target.value) }))} /></Field>
+          <Field label='Max daily loss'><input type='number' className={inputCls} placeholder='0' value={goalsDraft.maxDailyLoss || ''} onChange={(e) => setGoalsDraft((p) => ({ ...p, maxDailyLoss: Number(e.target.value) }))} /></Field>
+          <Field label='Target profit factor'><input type='number' step='any' className={inputCls} placeholder='0' value={goalsDraft.targetProfitFactor || ''} onChange={(e) => setGoalsDraft((p) => ({ ...p, targetProfitFactor: Number(e.target.value) }))} /></Field>
+        </div>
+
+        {/* Custom goals */}
+        {customGoalsDraft.length > 0 && (
+          <div className='mt-3 space-y-2 border-t border-slate-200 pt-3 dark:border-slate-700'>
+            <p className='text-xs font-medium text-slate-500 dark:text-slate-400'>Custom Goals</p>
+            {customGoalsDraft.map((cg) => (
+              <div key={cg.id} className='flex items-center gap-2'>
+                <input className={inputCls} placeholder='Goal label' value={cg.label} onChange={(e) => updateCustomGoal(cg.id, 'label', e.target.value)} />
+                <input type='number' className={inputCls} placeholder='0' style={{ maxWidth: 100 }} value={cg.value || ''} onChange={(e) => updateCustomGoal(cg.id, 'value', Number(e.target.value))} />
+                <button className='shrink-0 text-slate-400 hover:text-rose-500' onClick={() => removeCustomGoal(cg.id)}>✕</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Add new goal */}
+        <div className='mt-3 flex items-end gap-2 border-t border-slate-200 pt-3 dark:border-slate-700'>
+          <div className='flex-1'>
+            <Field label='New goal'>
+              <input className={inputCls} placeholder='Goal label' value={newGoalLabel} onChange={(e) => setNewGoalLabel(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addCustomGoal() }} />
+            </Field>
+          </div>
+          <div style={{ maxWidth: 100 }}>
+            <Field label='Target'>
+              <input type='number' className={inputCls} placeholder='0' value={newGoalValue} onChange={(e) => setNewGoalValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addCustomGoal() }} />
+            </Field>
+          </div>
+          <button className={cx(btnGhost, 'mb-0.5 shrink-0')} onClick={addCustomGoal}>Add</button>
+        </div>
+
+        {/* Save button */}
+        <div className='mt-3 flex items-center gap-2 border-t border-slate-200 pt-3 dark:border-slate-700'>
+          <button className={btnPrimary} onClick={saveGoals}>Save Goals</button>
+          {goalsSaved && <span className='text-xs text-emerald-500 font-medium'>✓ Saved</span>}
         </div>
       </Card>
       <Card title='Add account'>
