@@ -2214,8 +2214,10 @@ function CashflowPanel() {
 
 function Goals({ trades }) {
   const { state } = useStore()
+  const closed = trades.filter(isClosed)
+  if (!closed.length) return null
   const now = new Date()
-  const monthPnl = trades.filter(isClosed)
+  const monthPnl = closed
     .filter((t) => { const d = new Date(t.exitDate); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() })
     .reduce((s, t) => s + (tradePnl(t) || 0), 0)
   const maxDd = Math.abs(drawdownSeries(equityCurve(trades, 0, [])).maxDd)
@@ -3138,10 +3140,9 @@ function GoalCenterView({ trades }) {
   const dismissNotif = (key) => setDismissedNotifs((prev) => new Set([...prev, key]))
 
   const closed = trades.filter(isClosed)
-  const hasCustomGoals = (goals.customGoals || []).length > 0
 
-  if (!closed.length && !hasCustomGoals && !Object.values(goals).some((v) => v > 0 && v !== true && typeof v === 'number')) {
-    return <Empty icon='🏆' title='Set your trading goals' hint='Define targets for P&L, win rate, drawdown, and more. Track your progress with visual milestones.' />
+  if (!closed.length) {
+    return <Empty icon='🏆' title='No trades yet' hint='Add at least one trade to start tracking your goals and progress.' />
   }
 
   const overallProgress = goalProgress.length
