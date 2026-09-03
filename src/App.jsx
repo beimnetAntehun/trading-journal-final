@@ -3104,30 +3104,13 @@ function computeGoalProgress(trades, goals) {
 }
 
 function GoalCenterView({ trades }) {
-  const { state, setGoals } = useStore()
+  const { state } = useStore()
   const goals = state.goals
 
   // Compute progress
   const goalProgress = useMemo(() => computeGoalProgress(trades, goals), [trades, goals])
 
-  // Edit state for each goal
-  const [editValues, setEditValues] = useState(() => {
-    const v = {}
-    GOAL_DEFS.forEach((d) => { v[d.key] = goals[d.key] ?? '' })
-    return v
-  })
-  const [saved, setSaved] = useState(false)
   const [dismissedNotifs, setDismissedNotifs] = useState(new Set())
-
-  const saveGoal = (key, value) => {
-    const num = Number(value)
-    setEditValues((v) => ({ ...v, [key]: value }))
-    if (!isNaN(num) && num > 0) {
-      setGoals({ [key]: num })
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
-    }
-  }
 
   // Achievement notifications
   const newAchievements = useMemo(() => {
@@ -3166,19 +3149,12 @@ function GoalCenterView({ trades }) {
         </div>
       )}
 
-      {/* Quick edit success banner */}
-      {saved && (
-        <div className='rounded-lg bg-indigo-500/10 px-4 py-2 text-sm text-indigo-400'>
-          Goal updated ✓
-        </div>
-      )}
-
       {/* Overall completion ring */}
       <div className={cx(card, 'flex flex-col items-center p-6')}>
         <ProgressRing pct={overallProgress} size={140} strokeWidth={12}
           label={`${goalProgress.filter((g) => g.achieved).length}/${goalProgress.length} goals met`}
           sub={`${overallProgress}% complete`} />
-        <p className='mt-2 text-xs text-slate-400'>Click any goal to edit its target value</p>
+        <p className='mt-2 text-xs text-slate-400'>Edit targets in Settings</p>
       </div>
 
       {/* Goal cards grid */}
@@ -3227,20 +3203,6 @@ function GoalCenterView({ trades }) {
                 </div>
               </div>
 
-              {/* Inline editor (click to reveal) */}
-              <details className='group mt-2'>
-                <summary className='cursor-pointer text-[10px] text-slate-400 hover:text-indigo-400'>Edit target</summary>
-                <div className='mt-1.5 flex items-center gap-1.5'>
-                  <input type='number' step='any'
-                    className={cx(inputCls, 'py-0.5 text-xs')}
-                    value={editValues[g.key] ?? ''}
-                    onChange={(e) => setEditValues((v) => ({ ...v, [g.key]: e.target.value }))}
-                    onBlur={(e) => saveGoal(g.key, e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') saveGoal(g.key, e.target.value) }} />
-                  <button className={cx(btnGhost, 'text-xs py-0.5')}
-                    onClick={() => saveGoal(g.key, editValues[g.key])}>Set</button>
-                </div>
-              </details>
             </div>
           )
         })}
