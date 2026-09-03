@@ -1,7 +1,7 @@
 // src/context/StoreContext.jsx
 import React, { useState, useEffect, useMemo, useCallback, createContext, useContext } from 'react'
 import { db } from '../lib/storage'
-import { supabase, isSupabaseReady, cloudSave, cloudLoad } from '../lib/supabase'
+import { supabase, isSupabaseReady, cloudSave, cloudLoad, suppressAutoLogin } from '../lib/supabase'
 
 const StoreCtx = createContext(null)
 export const useStore = () => useContext(StoreCtx)
@@ -25,6 +25,8 @@ export function StoreProvider({ children }) {
       if (data?.session?.user) setUser(data.session.user)
     })
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Skip auto-login right after signup so user goes through login page
+      if (suppressAutoLogin) return
       setUser(session?.user ?? null)
     })
     return () => listener?.subscription?.unsubscribe()

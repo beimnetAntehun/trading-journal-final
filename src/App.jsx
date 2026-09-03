@@ -3778,7 +3778,7 @@ function TradingPlanView() {
             ) : (
               <h1 className='text-2xl font-bold cursor-pointer hover:text-indigo-500 transition-colors'
                 onClick={() => startEdit('name', plan.name)}>
-                {plan.name || ''} <span className='text-sm font-normal text-slate-400'>✎</span>
+                {plan.name || <span className='text-slate-400 dark:text-slate-500'>Your Name</span>} <span className='text-sm font-normal text-slate-400'>✎</span>
               </h1>
             )}
           </div>

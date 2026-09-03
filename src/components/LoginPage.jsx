@@ -1,7 +1,7 @@
 // src/components/LoginPage.jsx
 // Professional full-page login / signup screen.
 import React, { useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, setSuppressAutoLogin } from '../lib/supabase'
 
 const cx = (...a) => a.filter(Boolean).join(' ')
 const inputCls = 'w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500'
@@ -20,8 +20,10 @@ export function LoginPage({ onAuth }) {
     setLoading(true); setError(''); setSuccess('')
     try {
       if (mode === 'signup') {
+        setSuppressAutoLogin(true)
         const { data, error } = await supabase.auth.signUp({ email, password })
         if (error) {
+          setSuppressAutoLogin(false)
           if (error.message.includes('already registered') || error.message.includes('already exists')) {
             throw new Error('This email is already registered. Please login instead.')
           }
@@ -29,6 +31,8 @@ export function LoginPage({ onAuth }) {
         }
         setSuccess('Account created! You can now login.')
         setMode('login')
+        // Keep suppress flag for 3s to block auto-login from onAuthStateChange
+        setTimeout(() => setSuppressAutoLogin(false), 3000)
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) {

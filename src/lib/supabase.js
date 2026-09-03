@@ -11,6 +11,10 @@ export const supabase = SUPABASE_URL ? createClient(SUPABASE_URL, SUPABASE_ANON_
 
 export const isSupabaseReady = () => !!supabase
 
+// Flag to prevent auto-login right after signup
+export let suppressAutoLogin = false
+export const setSuppressAutoLogin = (v) => { suppressAutoLogin = v }
+
 /** Save user data to Supabase (cloud backup) */
 export async function cloudSave(userId, data) {
   if (!supabase || !userId) return false
