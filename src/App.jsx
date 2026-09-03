@@ -3828,7 +3828,7 @@ function TradingPlanView() {
 
 /* ============================ Settings ============================ */
 function SettingsView() {
-  const { state, setTags, setChecklist, setPrompts, setRiskPlan, setGoals, addAccount, hardReset, importJson } = useStore()
+  const { state, setTags, setChecklist, setPrompts, setRiskPlan, setGoals, setCustomGoals, addAccount, hardReset, importJson } = useStore()
   const [acc, setAcc] = useState({ name: '', type: 'live', startingBalance: 10000 })
   const rp = state.riskPlan
   // Goals draft state — edits are local until Save is clicked
@@ -3847,7 +3847,8 @@ function SettingsView() {
   const [goalsSaved, setGoalsSaved] = useState(false)
 
   const saveGoals = () => {
-    setGoals({ ...goalsDraft, customGoals: customGoalsDraft })
+    setGoals(goalsDraft)
+    setCustomGoals(customGoalsDraft)
     setGoalsSaved(true)
     setTimeout(() => setGoalsSaved(false), 2000)
   }

@@ -107,6 +107,7 @@ export function StoreProvider({ children }) {
     setPrompts: (arr) => update((s) => { s.reflectionPrompts = arr; return s }),
     setRiskPlan: (rp) => update((s) => { s.riskPlan = { ...s.riskPlan, ...rp }; return s }),
     setGoals: (g) => update((s) => { s.goals = { ...s.goals, ...g }; return s }),
+    setCustomGoals: (cg) => update((s) => { s.customGoals = cg; s.goals.customGoals = cg; return s }),
     setTradingPlan: (tp) => update((s) => { s.tradingPlan = { ...s.tradingPlan, ...tp }; return s }),
     setPlaybookModels: (models) => update((s) => { s.playbookModels = models; return s }),
     hardReset: () => setState(db.reset()),
