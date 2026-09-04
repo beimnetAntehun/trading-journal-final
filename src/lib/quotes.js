@@ -297,6 +297,377 @@ export const QUOTES = [
   { text: 'A trading plan without the discipline to follow it is just a wish.', author: 'Anonymous', category: 'discipline' },
   { text: 'Your trading system should be simple enough that you can follow it during emotional stress.', author: 'Anonymous', category: 'discipline' },
   { text: 'The difference between a successful trader and an unsuccessful one is the ability to follow their own rules.', author: 'Anonymous', category: 'discipline' },
+
+  // ======================== More Paul Tudor Jones ========================
+  { text: 'Losers average losers.', author: 'Paul Tudor Jones', category: 'risk' },
+  { text: 'The most important thing is to manage risk. If you can manage risk, you can survive long enough to make money.', author: 'Paul Tudor Jones', category: 'risk' },
+  { text: 'I always think of my trading in terms of what I can lose.', author: 'Paul Tudor Jones', category: 'risk' },
+  { text: 'If I have a position and it goes against me, I get out. I don\'t care what the fundamentals say.', author: 'Paul Tudor Jones', category: 'risk' },
+  { text: 'My metric for everything I look at is: the 200-day moving average. If the price is above the 200-day moving average, I\'m long. If below, I\'t go short.', author: 'Paul Tudor Jones', category: 'trading' },
+  { text: 'It\'s not about being right or wrong. It\'s about how much money you make when you\'re right and how much you lose when you\'re wrong.', author: 'Paul Tudor Jones', category: 'risk' },
+  { text: 'There are two types of people who lose money: those who know nothing and those who know everything.', author: 'Paul Tudor Jones', category: 'wisdom' },
+  { text: 'I\'ve been in this business for over 30 years and I can tell you that the best trades are the ones where the risk/reward is heavily in your favor.', author: 'Paul Tudor Jones', category: 'trading' },
+
+  // ======================== More Mark Douglas ========================
+  { text: 'When you accept defeat as a natural part of the process, you free yourself from fear.', author: 'Mark Douglas', category: 'psychology' },
+  { text: 'The moment you start thinking about the money you might lose, you have already lost.', author: 'Mark Douglas', category: 'psychology' },
+  { text: 'Your trading plan is your best friend. Stick to it no matter what.', author: 'Mark Douglas', category: 'discipline' },
+  { text: 'It doesn\'t matter if you win or lose on any individual trade. What matters is the pattern of your behavior over time.', author: 'Mark Douglas', category: 'discipline' },
+  { text: 'Most traders focus on making money. The best traders focus on following their process.', author: 'Mark Douglas', category: 'discipline' },
+  { text: 'Trading success is not about avoiding losses. It\'s about managing them effectively.', author: 'Mark Douglas', category: 'risk' },
+  { text: 'You need to think of trading in terms of probabilities, not certainties.', author: 'Mark Douglas', category: 'mindset' },
+  { text: 'If you don\'t have a trading plan, you don\'t have a trading strategy. You have gambling.', author: 'Mark Douglas', category: 'discipline' },
+  { text: 'The market doesn\'t generate random behavior. You do.', author: 'Mark Douglas', category: 'psychology' },
+  { text: 'Trading without a plan is like going to war without a strategy.', author: 'Mark Douglas', category: 'discipline' },
+
+  // ======================== More Jesse Livermore ========================
+  { text: 'The man who can sit tight in a position when he is wrong is the man who makes real money.', author: 'Jesse Livermore', category: 'wisdom' },
+  { text: 'Never buy a stock because it has had a big decline. Never short a stock because it has had a big advance.', author: 'Jesse Livermore', category: 'trading' },
+  { text: 'The desire for constant action irrespective of underlying conditions is responsible for many losses in Wall Street.', author: 'Jesse Livermore', category: 'discipline' },
+  { text: 'Wall Street professionals know more and earn less than the amateur investor.', author: 'Jesse Livermore', category: 'wisdom' },
+  { text: 'To anticipate the market is to forecast prejudices. You cannot predict the future.', author: 'Jesse Livermore', category: 'wisdom' },
+  { text: 'If a stock doesn\'t act right, don\'t touch it. Because being right about the market isn\'t the same as being right about the trade.', author: 'Jesse Livermore', category: 'trading' },
+  { text: 'I have always made money by waiting. Sitting tight. Letting the market come to me.', author: 'Jesse Livermore', category: 'discipline' },
+  { text: 'In trading, the hardest thing to do is to do nothing when the market tempts you.', author: 'Jesse Livermore', category: 'discipline' },
+
+  // ======================== More Warren Buffett ========================
+  { text: 'Only when the tide goes out do you discover who\'s been swimming naked.', author: 'Warren Buffett', category: 'risk' },
+  { text: 'It\'s only when you combine sound intellect with emotional discipline that you get rational behavior.', author: 'Warren Buffett', category: 'psychology' },
+  { text: 'The most important investment you can make is in yourself.', author: 'Warren Buffett', category: 'mindset' },
+  { text: 'Predicting rain doesn\'t count. Building arks does.', author: 'Warren Buffett', category: 'discipline' },
+  { text: 'The stock market is a no-called-strike game. You don\'t have to swing at everything.', author: 'Warren Buffett', category: 'discipline' },
+  { text: 'Risk is a function of how much you know about what you\'re doing.', author: 'Warren Buffett', category: 'risk' },
+  { text: 'I\'d rather earn a 15% return on someone else\'s money than a 20% return on my own.', author: 'Warren Buffett', category: 'trading' },
+  { text: 'Price is what you pay. Value is what you get. Always remember that.', author: 'Warren Buffett', category: 'trading' },
+  { text: 'In the short run, the market is a voting machine. In the long run, it\'s a weighing machine.', author: 'Warren Buffett', category: 'trading' },
+
+  // ======================== More Charlie Munger ========================
+  { text: 'All I want to know is where I\'m going to die, so I\'ll never go there.', author: 'Charlie Munger', category: 'risk' },
+  { text: 'Take a simple idea and take it seriously.', author: 'Charlie Munger', category: 'discipline' },
+  { text: 'You don\'t have to be brilliant to be a successful investor. You just have to have good habits.', author: 'Charlie Munger', category: 'discipline' },
+  { text: 'The best thing you can do is be independent of other people\'s opinions.', author: 'Charlie Munger', category: 'mindset' },
+  { text: 'I constantly see people rise in life who are not the smartest, sometimes not even the most diligent, but they are learning machines.', author: 'Charlie Munger', category: 'wisdom' },
+  { text: 'There\'s no such thing as a 100% certain investment. If there were, the return would be zero.', author: 'Charlie Munger', category: 'trading' },
+  { text: 'The world is full of foolish gamblers, and they will not do as well as the patient investor.', author: 'Charlie Munger', category: 'wisdom' },
+
+  // ======================== More George Soros ========================
+  { text: 'The way to build superior long-term returns is through preservation of capital and home runs.', author: 'George Soros', category: 'risk' },
+  { text: 'I\'ve been very rich and I\'ve been very poor. Believe me, rich is better.', author: 'George Soros', category: 'wisdom' },
+  { text: 'If investing is entertaining, if you\'re having fun, you\'re probably not making any money.', author: 'George Soros', category: 'discipline' },
+  { text: 'It\'s not whether you\'re right or wrong that\'s important, but how much money you make when you\'re right and how much you lose when you\'re wrong.', author: 'George Soros', category: 'risk' },
+  { text: 'There is no substitute for knowledge. You have to know what you are doing.', author: 'George Soros', category: 'discipline' },
+
+  // ======================== More Stanley Druckenmiller ========================
+  { text: 'The way to build superior long-term returns is through preservation of capital and home runs.', author: 'Stanley Druckenmiller', category: 'risk' },
+  { text: 'When you have tremendous conviction on a trade, you have to go for the jugular.', author: 'Stanley Druckenmiller', category: 'trading' },
+  { text: 'I\'ve learned many things from George Soros, but perhaps the most significant is that it\'s not whether you\'re right or wrong that\'s important, but how much money you make when you\'re right and how much you lose when you\'re wrong.', author: 'Stanley Druckenmiller', category: 'risk' },
+  { text: 'Liquidity is the key to success in the markets. Without it, you can\'t get in or out.', author: 'Stanley Druckenmiller', category: 'trading' },
+
+  // ======================== More Ed Seykota ========================
+  { text: 'Trading rules: (1) Cut losses. (2) Cut losses. (3) Cut losses. (4) Follow the rules without question. (5) Know when to break the rules.', author: 'Ed Seykota', category: 'risk' },
+  { text: 'The trading rules that work are the ones that fit your personality.', author: 'Ed Seykota', category: 'discipline' },
+  { text: 'The best traders are those who trade from their gut while using the brain as a check.', author: 'Ed Seykota', category: 'psychology' },
+
+  // ======================== Van Tharp (More) ========================
+  { text: 'You can have a winning system with a losing trader and a losing system with a winning trader. Guess who wins?', author: 'Van Tharp', category: 'psychology' },
+  { text: 'People who have created winning systems but can\'t follow them are usually trading out of fear.', author: 'Van Tharp', category: 'psychology' },
+  { text: 'Risk management is the most important thing to be well understood.', author: 'Van Tharp', category: 'risk' },
+  { text: 'Most traders focus on entries. They should focus on exits and position sizing.', author: 'Van Tharp', category: 'trading' },
+  { text: 'The ability to sit on your hands is one of the most important skills in trading.', author: 'Van Tharp', category: 'discipline' },
+
+  // ======================== Jack Schwager (More) ========================
+  { text: 'Every great trader I\'ve interviewed has one thing in common: they all take losses very seriously.', author: 'Jack Schwager', category: 'risk' },
+  { text: 'The ability to accept losses is a prerequisite for trading success.', author: 'Jack Schwager', category: 'psychology' },
+  { text: 'There is no single key to trading success. Each trader must find their own path.', author: 'Jack Schwager', category: 'wisdom' },
+
+  // ======================== Mark Minervini ========================
+  { text: 'The goal of a successful trader is to make the best trades. Money is secondary.', author: 'Mark Minervini', category: 'discipline' },
+  { text: 'Win or lose, everybody gets what they want out of the market.', author: 'Mark Minervini', category: 'mindset' },
+  { text: 'You have to define your risk before you enter a trade. If you don\'t, you\'re gambling.', author: 'Mark Minervini', category: 'risk' },
+  { text: 'I look for patterns that tend to repeat themselves. That\'s where the edge is.', author: 'Mark Minervini', category: 'trading' },
+  { text: 'The stock market is not a market of stocks. It\'s a market of emotions.', author: 'Mark Minervini', category: 'psychology' },
+  { text: 'Always act as if you are trading with real money. This builds the discipline you need.', author: 'Mark Minervini', category: 'discipline' },
+  { text: 'The best trades are the ones where the risk is clearly defined before you enter.', author: 'Mark Minervini', category: 'risk' },
+  { text: 'Trading is not about being right. It\'s about making money when you are right and losing as little as possible when you are wrong.', author: 'Mark Minervini', category: 'risk' },
+  { text: 'Patience is the most underrated skill in trading. Most people can\'t wait for the right setup.', author: 'Mark Minervini', category: 'discipline' },
+  { text: 'The key to trading success is having a plan and the discipline to follow it.', author: 'Mark Minervini', category: 'discipline' },
+
+  // ======================== Tom Hougaard ========================
+  { text: 'If you\'re losing money and you\'re stressed, you\'re trading too big.', author: 'Tom Hougaard', category: 'risk' },
+  { text: 'The market doesn\'t owe you anything. You have to earn it every single day.', author: 'Tom Hougaard', category: 'mindset' },
+  { text: 'Fear and greed are the two most powerful forces in the market. Master them or be mastered by them.', author: 'Tom Hougaard', category: 'psychology' },
+  { text: 'The best trade is the one you don\'t take when the setup isn\'t there.', author: 'Tom Hougaard', category: 'discipline' },
+  { text: 'Your account balance is a reflection of your psychology, not your intelligence.', author: 'Tom Hougaard', category: 'psychology' },
+  { text: 'Trade to survive first. Profit comes second.', author: 'Tom Hougaard', category: 'risk' },
+  { text: 'Don\'t trade to be right. Trade to make money.', author: 'Tom Hougaard', category: 'mindset' },
+
+  // ======================== ICT / Smart Money Concepts ========================
+  { text: 'The market is designed to move money from the impatient to the patient.', author: 'ICT', category: 'discipline' },
+  { text: 'Smart money doesn\'t follow the crowd. Smart money creates the crowd.', author: 'ICT', category: 'trading' },
+  { text: 'If you want to trade like the banks, you have to think like the banks.', author: 'ICT', category: 'trading' },
+  { text: 'The best time to buy is when nobody wants to. The best time to sell is when everybody is buying.', author: 'ICT', category: 'trading' },
+  { text: 'Liquidity is the fuel that drives the market. Find where the liquidity is, and you\'ll find where the market is going.', author: 'ICT', category: 'trading' },
+  { text: 'Patience is not just waiting. It\'s waiting with purpose.', author: 'ICT', category: 'discipline' },
+  { text: 'The algorithm doesn\'t care about your feelings. It only cares about liquidity.', author: 'ICT', category: 'mindset' },
+
+  // ======================== Richard Dennis (More) ========================
+  { text: 'The goal of a successful trader is to make the best trades. Money is secondary.', author: 'Richard Dennis', category: 'discipline' },
+  { text: 'When you get a good setup, bet big. When the odds are against you, bet small or not at all.', author: 'Richard Dennis', category: 'trading' },
+  { text: 'The Turtle system was about risk management, not prediction.', author: 'Richard Dennis', category: 'risk' },
+
+  // ======================== Larry Williams ========================
+  { text: 'The best traders are the ones who can control their emotions and follow their plan.', author: 'Larry Williams', category: 'discipline' },
+  { text: 'I\'ve been in this business for over 50 years and the one thing I know is that the market will always surprise you.', author: 'Larry Williams', category: 'wisdom' },
+  { text: 'Position sizing is more important than the entry itself.', author: 'Larry Williams', category: 'risk' },
+  { text: 'The market is a mechanism for transferring wealth from the active to the patient.', author: 'Larry Williams', category: 'discipline' },
+
+  // ======================== Kevin Davey ========================
+  { text: 'A good system should have a clear edge, and you should trade it exactly as designed.', author: 'Kevin Davey', category: 'discipline' },
+  { text: 'Walk-forward analysis is the most robust way to test a trading system.', author: 'Kevin Davey', category: 'trading' },
+  { text: 'Over-optimization is the enemy of a good trading system.', author: 'Kevin Davey', category: 'trading' },
+  { text: 'The simpler your trading system, the more robust it will be.', author: 'Kevin Davey', category: 'trading' },
+
+  // ======================== Andrea Unger ========================
+  { text: 'The best trading system is the one you can stick with through drawdowns.', author: 'Andrea Unger', category: 'discipline' },
+  { text: 'Don\'t fall in love with your trading system. Let the market tell you when it stops working.', author: 'Andrea Unger', category: 'wisdom' },
+  { text: 'Risk management and position sizing are more important than entry signals.', author: 'Andrea Unger', category: 'risk' },
+
+  // ======================== Ankit Parikh ========================
+  { text: 'Trade less, earn more. Quality over quantity always wins.', author: 'Ankit Parikh', category: 'discipline' },
+  { text: 'The market rewards patience and punishes greed.', author: 'Ankit Parikh', category: 'mindset' },
+  { text: 'A trader without a plan is like a ship without a rudder.', author: 'Ankit Parikh', category: 'discipline' },
+
+  // ======================== Brett Steenbarger ========================
+  { text: 'The best traders are excellent learners. They treat every trade as a lesson.', author: 'Brett Steenbarger', category: 'wisdom' },
+  { text: 'Emotional intelligence is the differentiator between good and great traders.', author: 'Brett Steenbarger', category: 'psychology' },
+  { text: 'The key to trading psychology is to stay present. Don\'t dwell on past trades or future outcomes.', author: 'Brett Steenbarger', category: 'psychology' },
+  { text: 'Self-awareness is the foundation of trading excellence.', author: 'Brett Steenbarger', category: 'psychology' },
+  { text: 'The quality of your trading is directly proportional to the quality of your decisions.', author: 'Brett Steenbarger', category: 'discipline' },
+
+  // ======================== Mark Spitznagel ========================
+  { text: 'The best trade is the one where you have the most to gain and the least to lose.', author: 'Mark Spitznagel', category: 'risk' },
+  { text: 'Asymmetric risk/reward is the holy grail of investing.', author: 'Mark Spitznagel', category: 'risk' },
+  { text: 'Don\'t protect your portfolio from risk. Profit from it.', author: 'Mark Spitznagel', category: 'risk' },
+
+  // ======================== Anton Kreil ========================
+  { text: 'You are not a professional trader until you can lose money without it affecting your sleep.', author: 'Anton Kreil', category: 'psychology' },
+  { text: 'The biggest edge in trading is emotional control.', author: 'Anton Kreil', category: 'psychology' },
+  { text: 'Professional traders manage risk. Amateurs chase returns.', author: 'Anton Kreil', category: 'risk' },
+
+  // ======================== Sam Seiden ========================
+  { text: 'Price is the ultimate truth in the market. Everything else is secondary.', author: 'Sam Seiden', category: 'trading' },
+  { text: 'Supply and demand is the only thing that moves price. Learn to identify these zones.', author: 'Sam Seiden', category: 'trading' },
+  { text: 'The best trades are where institutional orders are sitting.', author: 'Sam Seiden', category: 'trading' },
+
+  // ======================== Bulkowski ========================
+  { text: 'Pattern recognition is a skill that improves with practice and patience.', author: 'Thomas Bulkowski', category: 'trading' },
+  { text: 'Know your chart patterns, but don\'t expect them to work every time.', author: 'Thomas Bulkowski', category: 'trading' },
+
+  // ======================== Alexander Elder (More) ========================
+  { text: 'A successful trader is a well-disciplined trader who follows a system and manages risk.', author: 'Alexander Elder', category: 'discipline' },
+  { text: 'Trade with your head, not with your heart.', author: 'Alexander Elder', category: 'psychology' },
+  { text: 'There is no such thing as a safe trade. There are only trades with defined risk.', author: 'Alexander Elder', category: 'risk' },
+  { text: 'The most important rule of trading is to play great defense.', author: 'Alexander Elder', category: 'risk' },
+  { text: 'The trend is your friend until it bends. That\'s when you need to be careful.', author: 'Alexander Elder', category: 'trading' },
+
+  // ======================== Trading Psychology (Various) ========================
+  { text: 'Your biggest enemy in trading is not the market. It\'s yourself.', author: 'Anonymous', category: 'psychology' },
+  { text: 'FOMO is the trader\'s worst enemy. The market will always give you another opportunity.', author: 'Anonymous', category: 'psychology' },
+  { text: 'Revenge trading is the fastest way to blow up your account.', author: 'Anonymous', category: 'psychology' },
+  { text: 'If you can\'t explain your trade in one sentence, you don\'t have a clear plan.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The best traders treat every trade the same, regardless of size or outcome.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Trading is 80% psychology and 20% strategy. If you can\'t manage your emotions, no system will save you.', author: 'Anonymous', category: 'psychology' },
+  { text: 'A trade without a stop-loss is not a trade. It\'s a gamble.', author: 'Anonymous', category: 'risk' },
+  { text: 'Patience is not the ability to wait. It\'s the ability to keep a good attitude while waiting.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The market will test your conviction. If your analysis is right, hold. If it\'s wrong, get out.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Don\'t try to predict the market. React to what it\'s actually doing.', author: 'Anonymous', category: 'trading' },
+  { text: 'Overtrading is the silent killer of trading accounts.', author: 'Anonymous', category: 'discipline' },
+  { text: 'If you\'re confused, don\'t trade. Confusion leads to losses.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The market doesn\'t care about your opinion. It only cares about supply and demand.', author: 'Anonymous', category: 'trading' },
+  { text: 'Every trade is a business decision. Treat it like one.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Your account is your business. Protect it at all costs.', author: 'Anonymous', category: 'risk' },
+  { text: 'The secret to trading success is not in the winning trades. It\'s in the losing trades.', author: 'Anonymous', category: 'risk' },
+  { text: 'If you can\'t lose gracefully, you can\'t win gracefully either.', author: 'Anonymous', category: 'psychology' },
+  { text: 'A great trader is someone who has mastered the art of losing small and winning big.', author: 'Anonymous', category: 'risk' },
+  { text: 'The trend is your friend. The range is your enemy. Know the difference.', author: 'Anonymous', category: 'trading' },
+  { text: 'Trade what you see, not what you think.', author: 'Anonymous', category: 'trading' },
+  { text: 'The market is always right. You can be wrong.', author: 'Anonymous', category: 'mindset' },
+  { text: 'Never argue with the market. It\'s always right.', author: 'Anonymous', category: 'mindset' },
+  { text: 'Your trading journal is your most valuable trading tool. Use it.', author: 'Anonymous', category: 'discipline' },
+  { text: 'If you can\'t explain it simply, you don\'t understand it well enough.', author: 'Anonymous', category: 'wisdom' },
+  { text: 'The best trades come when you\'re patient, not when you\'re desperate.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Successful trading is about the consistency of your process, not the outcome of any single trade.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Your edge is not in the trade. Your edge is in your risk management.', author: 'Anonymous', category: 'risk' },
+
+  // ======================== Risk Management (Various) ========================
+  { text: 'Risk management is the art of making money without taking unnecessary risks.', author: 'Anonymous', category: 'risk' },
+  { text: 'The first rule of risk management is to never lose money. The second rule is to never forget the first.', author: 'Anonymous', category: 'risk' },
+  { text: 'A risk/reward ratio of at least 1:2 should be the minimum for any trade.', author: 'Anonymous', category: 'risk' },
+  { text: 'Never risk more than 1-2% of your account on a single trade. Ever.', author: 'Anonymous', category: 'risk' },
+  { text: 'Position sizing is the most overlooked aspect of trading. Get it right and everything else falls into place.', author: 'Anonymous', category: 'risk' },
+  { text: 'The best risk management strategy is the one you can actually follow.', author: 'Anonymous', category: 'risk' },
+  { text: 'Small accounts need even stricter risk management, not looser.', author: 'Anonymous', category: 'risk' },
+  { text: 'Risk is not something to be eliminated. It\'s something to be managed.', author: 'Anonymous', category: 'risk' },
+  { text: 'The greatest risk in trading is not knowing your risk.', author: 'Anonymous', category: 'risk' },
+  { text: 'If you don\'t know your stop-loss before entering a trade, you\'re not trading. You\'re gambling.', author: 'Anonymous', category: 'risk' },
+
+  // ======================== Market Wisdom (Various) ========================
+  { text: 'The market is a pendulum that forever swings between unsustainable optimism and unjustified pessimism.', author: 'Benjamin Graham', category: 'wisdom' },
+  { text: 'Be fearful when others are greedy and greedy when others are fearful. But always be disciplined.', author: 'Warren Buffett', category: 'discipline' },
+  { text: 'The four most expensive words in the English language are: "This time it\'s different."', author: 'John Templeton', category: 'wisdom' },
+  { text: 'History doesn\'t repeat itself, but it often rhymes.', author: 'Mark Twain', category: 'wisdom' },
+  { text: 'The stock market is the only market where things go on sale and all the customers run out of the store.', author: 'Cullen Roche', category: 'wisdom' },
+  { text: 'In investing, what is comfortable is rarely profitable.', author: 'Robert Arnott', category: 'wisdom' },
+  { text: 'The investor\'s chief problem — and even his worst enemy — is likely to be himself.', author: 'Benjamin Graham', category: 'psychology' },
+  { text: 'Successful investing is about managing risk, not avoiding it.', author: 'Benjamin Graham', category: 'risk' },
+  { text: 'An investment in knowledge pays the best interest.', author: 'Benjamin Franklin', category: 'wisdom' },
+  { text: 'The stock market is a device for transferring money from the impatient to the patient.', author: 'Warren Buffett', category: 'discipline' },
+
+  // ======================== Discipline (Various) ========================
+  { text: 'Success is nothing more than a few simple disciplines practiced every day.', author: 'Jim Rohn', category: 'discipline' },
+  { text: 'Discipline is the bridge between goals and accomplishment.', author: 'Jim Rohn', category: 'discipline' },
+  { text: 'What you do every day matters more than what you do once in a while.', author: 'Jim Rohn', category: 'discipline' },
+  { text: 'Your life does not get better by chance. It gets better by change.', author: 'Jim Rohn', category: 'mindset' },
+  { text: 'We become what we repeatedly do.', author: 'Sean Covey', category: 'discipline' },
+  { text: 'Motivation gets you started. Habit keeps you going.', author: 'Jim Ryun', category: 'discipline' },
+  { text: 'Consistency is what transforms average into excellence.', author: 'Anonymous', category: 'discipline' },
+  { text: 'A goal without a plan is just a wish.', author: 'Antoine de Saint-Exupéry', category: 'discipline' },
+  { text: 'Excellence is not a singular act, but a habit. You are what you repeatedly do.', author: 'Will Durant', category: 'discipline' },
+  { text: 'The secret of your future is hidden in your daily routine.', author: 'Mike Murdock', category: 'discipline' },
+
+  // ======================== Mindset & Psychology (Various) ========================
+  { text: 'The only person you can truly control is yourself. Master your mind and you\'ll master the market.', author: 'Anonymous', category: 'psychology' },
+  { text: 'Pain is temporary. Quitting lasts forever.', author: 'Lance Armstrong', category: 'mindset' },
+  { text: 'It does not matter how slowly you go as long as you do not stop.', author: 'Confucius', category: 'mindset' },
+  { text: 'Fall seven times, stand up eight.', author: 'Japanese Proverb', category: 'mindset' },
+  { text: 'The mind is everything. What you think you become.', author: 'Buddha', category: 'mindset' },
+  { text: 'Out of your vulnerabilities will come your strength.', author: 'Sigmund Freud', category: 'mindset' },
+  { text: 'The greatest discovery of my generation is that human beings can alter their lives by altering their attitudes of mind.', author: 'William James', category: 'psychology' },
+  { text: 'What lies behind us and what lies before us are tiny matters compared to what lies within us.', author: 'Ralph Waldo Emerson', category: 'mindset' },
+  { text: 'Your worst enemy cannot harm you as much as your own unguarded thoughts.', author: 'Buddha', category: 'psychology' },
+  { text: 'The happiness of your life depends upon the quality of your thoughts.', author: 'Marcus Aurelius', category: 'mindset' },
+
+  // ======================== Stoic Wisdom for Traders ========================
+  { text: 'The impediment to action advances action. What stands in the way becomes the way.', author: 'Marcus Aurelius', category: 'mindset' },
+  { text: 'You have power over your mind — not outside events. Realize this, and you will find strength.', author: 'Marcus Aurelius', category: 'psychology' },
+  { text: 'Waste no more time arguing about what a good trader should be. Be one.', author: 'Marcus Aurelius', category: 'discipline' },
+  { text: 'It is not death that a man should fear, but he should fear never beginning to live.', author: 'Marcus Aurelius', category: 'mindset' },
+  { text: 'The best revenge is not to be like your enemy.', author: 'Marcus Aurelius', category: 'mindset' },
+  { text: 'Accept the things to which fate binds you, and love the people with whom fate brings you together.', author: 'Marcus Aurelius', category: 'mindset' },
+  { text: 'How much more grievous are the consequences of anger than the causes of it.', author: 'Marcus Aurelius', category: 'psychology' },
+  { text: 'The object of life is not to be on the side of the majority, but to escape finding oneself in the ranks of the insane.', author: 'Marcus Aurelius', category: 'wisdom' },
+  { text: 'Very little is needed to make a happy life; it is all within yourself, in your way of thinking.', author: 'Marcus Aurelius', category: 'mindset' },
+
+  // ======================== Ryan Holiday (Modern Stoicism) ========================
+  { text: 'The obstacle is the way.', author: 'Ryan Holiday', category: 'mindset' },
+  { text: 'Ego is the enemy of what you want and of what you have.', author: 'Ryan Holiday', category: 'psychology' },
+  { text: 'The less energy wasted on things outside your control, the more you can focus on what actually matters.', author: 'Ryan Holiday', category: 'discipline' },
+  { text: 'Stillness is the key to success in all areas of life.', author: 'Ryan Holiday', category: 'psychology' },
+  { text: 'Your emotions are not your enemies. They are data. They are signals.', author: 'Ryan Holiday', category: 'psychology' },
+
+  // ======================== More Risk & Money Management ========================
+  { text: 'The first rule of compounding: never interrupt it unnecessarily.', author: 'Charlie Munger', category: 'risk' },
+  { text: 'Every great trader has a plan for losing money. Do you?', author: 'Anonymous', category: 'risk' },
+  { text: 'If you\'re not managing risk, you\'re not trading. You\'re gambling.', author: 'Anonymous', category: 'risk' },
+  { text: 'The biggest risk a trader can take is not taking any risk at all.', author: 'Anonymous', category: 'risk' },
+  { text: 'Risk comes from not knowing what you\'re doing. Education is your best hedge.', author: 'Warren Buffett', category: 'risk' },
+  { text: 'Protect your downside and the upside will take care of itself.', author: 'Anonymous', category: 'risk' },
+  { text: 'The best traders are the ones who know how to lose gracefully.', author: 'Anonymous', category: 'risk' },
+  { text: 'Risk management is not about avoiding risk. It\'s about managing it intelligently.', author: 'Anonymous', category: 'risk' },
+
+  // ======================== Trading Strategies & Techniques ========================
+  { text: 'The trend is your friend until it ends. Then it\'s your enemy.', author: 'Anonymous', category: 'trading' },
+  { text: 'Buy the rumor, sell the news.', author: 'Wall Street Adage', category: 'trading' },
+  { text: 'Cut your losers short and let your winners run.', author: 'Wall Street Adage', category: 'trading' },
+  { text: 'Don\'t fight the trend. Flow with it.', author: 'Anonymous', category: 'trading' },
+  { text: 'The best setups are the ones where everything aligns: trend, support/resistance, and volume.', author: 'Anonymous', category: 'trading' },
+  { text: 'Patience in waiting for the right setup is what separates professionals from amateurs.', author: 'Anonymous', category: 'trading' },
+  { text: 'Never chase a trade. If you missed it, wait for the next one.', author: 'Anonymous', category: 'trading' },
+  { text: 'The best trades are boring. The worst trades are exciting.', author: 'Anonymous', category: 'trading' },
+  { text: 'Volume precedes price. If volume is drying up, expect a move soon.', author: 'Anonymous', category: 'trading' },
+  { text: 'In trading, timing is everything. The right trade at the wrong time is still a wrong trade.', author: 'Anonymous', category: 'trading' },
+
+  // ======================== Daily Habits & Routines ========================
+  { text: 'The successful trader has a routine. The unsuccessful trader has habits.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Prepare for the market before it opens. Review after it closes. This is the way.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Every morning, review your plan. Every evening, review your execution.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The best traders are the best preparers. They don\'t wing it.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Your pre-market routine determines your trading day. Make it count.', author: 'Anonymous', category: 'discipline' },
+
+  // ======================== Learning & Growth ========================
+  { text: 'The more you learn, the more you earn.', author: 'Warren Buffett', category: 'wisdom' },
+  { text: 'An investment in knowledge pays the best interest.', author: 'Benjamin Franklin', category: 'wisdom' },
+  { text: 'The best traders are lifelong learners. They never stop improving.', author: 'Anonymous', category: 'wisdom' },
+  { text: 'Every loss is a lesson. Every win is a confirmation. Study both equally.', author: 'Anonymous', category: 'wisdom' },
+  { text: 'Your trading journal is your most honest teacher. It tells you exactly where you need to improve.', author: 'Anonymous', category: 'wisdom' },
+  { text: 'Mastery in trading takes years, not months. Be patient with the process.', author: 'Anonymous', category: 'wisdom' },
+  { text: 'The market is the best teacher. It humbles the proud and rewards the humble.', author: 'Anonymous', category: 'wisdom' },
+
+  // ======================== Patience & Waiting ========================
+  { text: 'The money is made in the waiting, not in the trading.', author: 'Jesse Livermore', category: 'discipline' },
+  { text: 'Patience is a virtue in trading. It\'s also the hardest one to master.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Good things come to those who wait. Great things come to those who prepare and then wait.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The market rewards those who can wait for the perfect setup.', author: 'Anonymous', category: 'discipline' },
+  { text: 'In trading, doing nothing is often the best trade.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The ability to sit on your hands is a superpower in trading.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Wait for the pitch. Don\'t swing at everything.', author: 'Warren Buffett', category: 'discipline' },
+  { text: 'Most of the money in trading is made sitting, not thinking.', author: 'Jesse Livermore', category: 'discipline' },
+  { text: 'Patience is not simply the ability to wait. It\'s the ability to stay calm and focused while working hard for what you want.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The waiting is the hardest part. But it\'s also where the money is.', author: 'Anonymous', category: 'discipline' },
+
+  // ======================== Trader Lifestyle ========================
+  { text: 'Trading is not a get-rich-quick scheme. It\'s a get-rich-slowly scheme.', author: 'Anonymous', category: 'wisdom' },
+  { text: 'The best traders treat trading like a business, not a hobby.', author: 'Anonymous', category: 'discipline' },
+  { text: 'You can\'t trade all day and expect to have a life. Balance is key.', author: 'Anonymous', category: 'mindset' },
+  { text: 'The market is open 24/7. Your mental health isn\'t. Take breaks.', author: 'Anonymous', category: 'psychology' },
+  { text: 'Exercise, sleep, and nutrition affect your trading performance more than any indicator.', author: 'Anonymous', category: 'psychology' },
+
+  // ======================== Forex Specific ========================
+  { text: 'In forex, correlation is your friend and your enemy. Know the pairs.', author: 'Anonymous', category: 'trading' },
+  { text: 'The dollar is the world\'s reserve currency. Respect its power.', author: 'Anonymous', category: 'trading' },
+  { text: 'Central banks move the forex market. Pay attention to their policies.', author: 'Anonymous', category: 'trading' },
+  { text: 'Liquidity in forex is highest during London and New York sessions. Trade during overlap for best moves.', author: 'Anonymous', category: 'trading' },
+  { text: 'The best forex traders are macro traders. They understand the bigger picture.', author: 'Anonymous', category: 'trading' },
+
+  // ======================== Crypto Specific ========================
+  { text: 'In crypto, volatility is your friend if you manage risk properly.', author: 'Anonymous', category: 'trading' },
+  { text: 'Don\'t invest more than you can afford to lose in crypto. It\'s that simple.', author: 'Anonymous', category: 'risk' },
+  { text: 'The crypto market moves 24/7. Your sleep is more important than any trade.', author: 'Anonymous', category: 'psychology' },
+  { text: 'DYOR — Do Your Own Research. Never follow anyone blindly in crypto.', author: 'Anonymous', category: 'discipline' },
+
+  // ======================== Final Batch of Wisdom ========================
+  { text: 'The only limit to your impact is your imagination and commitment.', author: 'Tony Robbins', category: 'mindset' },
+  { text: 'The way to get started is to quit talking and begin doing.', author: 'Walt Disney', category: 'mindset' },
+  { text: 'Don\'t let yesterday take up too much of today.', author: 'Will Rogers', category: 'mindset' },
+  { text: 'It always seems impossible until it\'s done.', author: 'Nelson Mandela', category: 'mindset' },
+  { text: 'If you want to fly, you have to give up the things that weigh you down.', author: 'Toni Morrison', category: 'mindset' },
+  { text: 'The only way to do great work is to love what you do.', author: 'Steve Jobs', category: 'mindset' },
+  { text: 'Innovation distinguishes between a leader and a follower.', author: 'Steve Jobs', category: 'mindset' },
+  { text: 'Stay hungry, stay foolish.', author: 'Steve Jobs', category: 'mindset' },
+  { text: 'Your time is limited, don\'t waste it living someone else\'s life.', author: 'Steve Jobs', category: 'mindset' },
+  { text: 'Have the courage to follow your heart and intuition.', author: 'Steve Jobs', category: 'mindset' },
+
+  // ======================== Final Trading Quotes ========================
+  { text: 'The market transfers money from the active to the patient.', author: 'Warren Buffett', category: 'discipline' },
+  { text: 'The best traders are not those who win the most. They are those who lose the least.', author: 'Anonymous', category: 'risk' },
+  { text: 'Every professional was once an amateur. The difference is they never stopped learning.', author: 'Anonymous', category: 'wisdom' },
+  { text: 'Trading is a marathon. Pace yourself accordingly.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The goal is not to be right. The goal is to make money.', author: 'George Soros', category: 'mindset' },
+  { text: 'Trade less. Think more. Execute better.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The best traders are those who can remain calm under pressure.', author: 'Anonymous', category: 'psychology' },
+  { text: 'If you can handle losses, the wins will take care of themselves.', author: 'Anonymous', category: 'risk' },
+  { text: 'The market rewards those who respect it and punishes those who don\'t.', author: 'Anonymous', category: 'mindset' },
+  { text: 'A trader\'s job is not to predict the future. It\'s to prepare for it.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Don\'t fall in love with your trades. Fall in love with your process.', author: 'Anonymous', category: 'discipline' },
+  { text: 'The difference between a winning trader and a losing trader is their habits.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Your trading edge is your routine. Protect it fiercely.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Simplicity is the ultimate sophistication in trading.', author: 'Anonymous', category: 'trading' },
+  { text: 'The best system is the one you can follow consistently under pressure.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Don\'t chase the market. Let the market come to you.', author: 'Anonymous', category: 'trading' },
+  { text: 'Your job as a trader is not to make money. It\'s to manage risk. The money follows.', author: 'Anonymous', category: 'risk' },
+  { text: 'Every trading day is a new opportunity. Don\'t let yesterday\'s losses steal today\'s opportunities.', author: 'Anonymous', category: 'mindset' },
+  { text: 'The best trades are the ones you didn\'t take. Patience is a trade too.', author: 'Anonymous', category: 'discipline' },
+  { text: 'Your trading account is your business. Treat it with respect.', author: 'Anonymous', category: 'discipline' },
 ]
 
 /** Get a random quote from the database. */
