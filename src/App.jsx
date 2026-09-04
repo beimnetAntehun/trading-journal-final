@@ -449,8 +449,6 @@ function FiltersBar({ filters, setFilters, aggregate }) {
   const { state } = useStore()
   const upd = (k, v) => setFilters((f) => ({ ...f, [k]: v }))
   const activeDrills = []
-  if (filters.from) activeDrills.push({ key: 'from', label: 'From: ' + filters.from })
-  if (filters.to) activeDrills.push({ key: 'to', label: 'To: ' + filters.to })
   if (filters.dayOfWeek) activeDrills.push({ key: 'dayOfWeek', label: 'Day: ' + filters.dayOfWeek })
   if (filters.hour !== '') activeDrills.push({ key: 'hour', label: 'Hour: ' + filters.hour })
   return (
@@ -487,10 +485,7 @@ function FiltersBar({ filters, setFilters, aggregate }) {
           {activeDrills.map((d) => (
             <span key={d.key} className='inline-flex items-center gap-1 rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-medium text-indigo-400'>
               {d.label}
-              <button className='text-indigo-400/60 hover:text-indigo-300' onClick={() => {
-                if (d.key === 'from' || d.key === 'to') { setFilters((f) => ({ ...f, from: '', to: '' })) }
-                else { upd(d.key, d.key === 'hour' ? '' : '') }
-              }}>✕</button>
+              <button className='text-indigo-400/60 hover:text-indigo-300' onClick={() => upd(d.key, d.key === 'hour' ? '' : '')}>✕</button>
             </span>
           ))}
         </div>
