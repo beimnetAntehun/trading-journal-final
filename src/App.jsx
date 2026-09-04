@@ -2652,7 +2652,7 @@ function ListEditor({ label, items = [], onChange }) {
       <div className='flex gap-2'>
         <input className={inputCls} value={val} onChange={(e) => setVal(e.target.value)} placeholder={'Add ' + label.toLowerCase() + '…'}
           onKeyDown={(e) => { if (e.key === 'Enter') addItem() }} />
-        <button className={btnGhost} onClick={addItem}>Add</button>
+        <button className={btnGhost} onClick={addItem}>Add {label}</button>
       </div>
     </div>
   )
