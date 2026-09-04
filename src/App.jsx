@@ -1652,7 +1652,7 @@ function Dashboard({ trades, setFilters, onNavigate }) {
 
         {/* Calendar mini */}
         <div className={cx(card, 'p-3')}>
-          <CalendarHeat trades={closed} onDrillDay={(d) => setFilters((f) => ({ ...f, from: d, to: d }))} compact />
+          <CalendarHeat trades={closed} onDrillDay={(d) => { setFilters((f) => ({ ...f, from: d, to: d })); onNavigate('trades') }} compact />
           <button className='mt-1 text-[10px] text-indigo-500 hover:underline' onClick={() => setView('dashboard')}>Full view →</button>
         </div>
       </div>
