@@ -4072,9 +4072,9 @@ function Shell() {
             </div>
           </div>
         )}
-        <aside className='no-print hidden border-b border-slate-200 dark:border-slate-800 md:block md:sticky md:top-0 md:h-screen md:w-56 md:shrink-0 md:border-b-0 md:border-r'>
+        <aside className='no-print hidden border-b border-slate-200 dark:border-slate-800 md:flex md:flex-col md:sticky md:top-0 md:h-screen md:w-56 md:shrink-0 md:border-b-0 md:border-r'>
           <div className='flex items-center gap-2 p-4'><span className='text-xl'>📈</span><span className='font-bold'>TradeJournal</span></div>
-          <nav className='flex gap-1 overflow-x-auto px-2 pb-2 md:flex-col md:overflow-visible'>
+          <nav className='flex gap-1 overflow-x-auto px-2 pb-2 md:flex-col md:overflow-y-auto md:overflow-x-hidden md:flex-1'>
             {NAV.map(([id, label, icon]) => (
               <button key={id} onClick={() => setView(id)}
                 className={cx('flex items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm', view === id ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800')}>
