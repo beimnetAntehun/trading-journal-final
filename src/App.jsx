@@ -1976,11 +1976,12 @@ function CalendarHeat({ trades, onDrillDay, compact }) {
             const bg = pnl == null ? undefined : pnl >= 0
               ? 'rgba(16,185,129,' + (0.2 + 0.8 * Math.abs(pnl) / max) + ')'
               : 'rgba(244,63,94,' + (0.2 + 0.8 * Math.abs(pnl) / max) + ')'
+            const hasTrade = pnl != null
             return (
-              <div key={i} className='flex h-7 cursor-pointer flex-col items-center justify-center rounded transition-opacity hover:opacity-80'
+              <div key={i} className={cx('flex h-7 flex-col items-center justify-center rounded transition-opacity', hasTrade ? 'cursor-pointer hover:opacity-80' : 'cursor-default')}
                 style={{ background: bg }}
-                onClick={() => onDrillDay && onDrillDay(keyFor(month, d))}>
-                <span className={cx('font-medium', pnl != null ? 'text-white' : 'text-slate-400')}>{d}</span>
+                onClick={() => hasTrade && onDrillDay && onDrillDay(keyFor(month, d))}>
+                <span className={cx('font-medium', hasTrade ? 'text-white' : 'text-slate-400')}>{d}</span>
               </div>
             )
           })}
@@ -2006,12 +2007,13 @@ function CalendarHeat({ trades, onDrillDay, compact }) {
           const bg = pnl == null ? undefined : pnl >= 0
             ? 'rgba(16,185,129,' + (0.2 + 0.8 * Math.abs(pnl) / max) + ')'
             : 'rgba(244,63,94,' + (0.2 + 0.8 * Math.abs(pnl) / max) + ')'
+          const hasTrade = pnl != null
           return (
-            <div key={i} className='flex h-14 cursor-pointer flex-col items-center justify-center rounded border border-slate-100 p-1 transition-opacity hover:opacity-80 dark:border-slate-800'
+            <div key={i} className={cx('flex h-14 flex-col items-center justify-center rounded border border-slate-100 p-1 transition-opacity dark:border-slate-800', hasTrade ? 'cursor-pointer hover:opacity-80' : 'cursor-default')}
               style={{ background: bg }}
-              onClick={() => onDrillDay && onDrillDay(keyFor(month, d))}>
-              <span className={cx('text-[11px]', pnl != null && 'font-semibold text-white')}>{d}</span>
-              {pnl != null && <span className='text-[10px] text-white/90'>{Math.round(pnl)}</span>}
+              onClick={() => hasTrade && onDrillDay && onDrillDay(keyFor(month, d))}>
+              <span className={cx('text-[11px]', hasTrade && 'font-semibold text-white')}>{d}</span>
+              {hasTrade && <span className='text-[10px] text-white/90'>{Math.round(pnl)}</span>}
             </div>
           )
         })}
