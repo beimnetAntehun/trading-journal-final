@@ -2491,16 +2491,6 @@ function CoachView({ trades }) {
           )
         })}
       </div>
-
-      {/* Architecture Disclaimer */}
-      <div className='rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/40 p-4 text-xs text-slate-500 dark:text-slate-400 no-print flex flex-col md:flex-row md:items-center justify-between gap-2'>
-        <span>
-          ⚙️ <b>Architecture Note:</b> This coaching module runs on a high-speed, local rule-based inference engine.
-        </span>
-        <span className='font-medium text-indigo-500 dark:text-indigo-400'>
-          Ready for LLM Integration (Claude Sonnet 3.5 / Haiku API)
-        </span>
-      </div>
     </div>
   )
 }
