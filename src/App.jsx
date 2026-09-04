@@ -3991,6 +3991,7 @@ const NAV = [
   ['risk', 'Risk', '🛡'],
   ['psych', 'Psychology', '🧠'],
   ['coach', 'AI Coach', '🤖'],
+  ['quotes', 'Quotes', '💬'],
   ['reports', 'Reports', '📄'],
   ['settings', 'Settings', '⚙'],
 ]
@@ -4147,6 +4148,7 @@ function Shell() {
           {view === 'risk' && <RiskView trades={visible} />}
           {view === 'psych' && <PsychologyView trades={visible} setFilters={setFilters} />}
           {view === 'coach' && <CoachView trades={visible} />}
+          {view === 'quotes' && <QuotesPage />}
           {view === 'reports' && <ReportsView trades={visible} />}
           {view === 'settings' && <SettingsView />}
         </main>
